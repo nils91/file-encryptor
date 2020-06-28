@@ -4,6 +4,7 @@
 /.settings/
 
 #java
+/bin/
 *.class
 
 #maven
