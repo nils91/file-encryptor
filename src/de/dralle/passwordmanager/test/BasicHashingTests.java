@@ -30,7 +30,16 @@ class BasicHashingTests {
 		}	
 		assertNotNull(sha);
 	}
-	
+	@Test
+	void testSHA512Availabilty() {
+		MessageDigest sha = null;
+		try {
+			sha = MessageDigest.getInstance("SHA-512");
+		} catch (NoSuchAlgorithmException e) {
+			fail("SHA-512 not available");
+		}	
+		assertNotNull(sha);
+	}
 	@Test
 	void testBasicHashingSHA1() {
 		MessageDigest sha = null;
