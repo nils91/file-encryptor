@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+ 
+    <groupId>de.dralle.mathparser</groupId>
+    <artifactId>all</artifactId>
+    <version>0.1.10</version>
+    <packaging>pom</packaging>
+ 
+    <name>mathparser-all</name>
+ 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      </properties>
+      
+      <!-- Folder names, not project names -->
+      <modules>
+      	<module>grammar</module>
+      	<module>term</module>
+      	<module>interface</module>
+      	<module>services</module>
+      	<module>deploy-debug</module>
+      </modules>
+</project>
