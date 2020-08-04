@@ -22,9 +22,9 @@ public class HashingUtil {
 		return sha.digest(input);
 	}
 	
-	public byte[] getHash(byte[] input) {
+	public byte[] getHashSHA256(byte[] input) {
 		try {
-			return getHash(input, "SHA-256");
+			return getHash(input, ALGO_SHA_256);
 		} catch (NoSuchAlgorithmException e) {			
 			e.printStackTrace();
 		}
