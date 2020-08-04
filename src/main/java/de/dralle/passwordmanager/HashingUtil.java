@@ -11,6 +11,11 @@ import java.security.NoSuchAlgorithmException;
  *
  */
 public class HashingUtil {
+	@Deprecated
+	public static final String ALGO_SHA_1="SHA-1";
+	
+	public static final String ALGO_SHA_256="SHA-256";
+	public static final String ALGO_SHA_512="SHA-512";
 	
 	public byte[] getHash(byte[] input,String algorithm) throws NoSuchAlgorithmException {
 		MessageDigest sha = MessageDigest.getInstance(algorithm);
