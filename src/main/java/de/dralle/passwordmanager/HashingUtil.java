@@ -12,8 +12,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class HashingUtil {
 	
-	public byte[] getHash(byte[] input,String alghirthm) throws NoSuchAlgorithmException {
-		MessageDigest sha = MessageDigest.getInstance(alghirthm);
+	public byte[] getHash(byte[] input,String algorithm) throws NoSuchAlgorithmException {
+		MessageDigest sha = MessageDigest.getInstance(algorithm);
 		return sha.digest(input);
 	}
 	
