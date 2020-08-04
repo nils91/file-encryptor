@@ -103,7 +103,7 @@ public class HashingUtil {
 	 *                  array. If salt is null, just the hash of input will be
 	 *                  returned.
 	 * @param algorithm
-	 * @return
+	 * @return Salted hash. The salt will be added in font of the hash.
 	 * @throws NoSuchAlgorithmException
 	 */
 	public byte[] getSaltedHash(byte[] input, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
@@ -111,26 +111,22 @@ public class HashingUtil {
 			return getHash(input, algorithm);
 		}
 		SecureRandom.getInstanceStrong().nextBytes(salt);
-		byte[] saltedInput = new byte[salt.length + input.length];
-		for (int i = 0; i < saltedInput.length; i++) {
-			if (i < salt.length) {
-				saltedInput[i] = salt[i];
-			} else {
-				saltedInput[i] = input[i - salt.length];
-			}
-		}
+		byte[] saltedInput = concatenateArrays(salt, input);
 		byte[] hash = getHash(saltedInput, algorithm);
-		byte[] saltedHash = new byte[salt.length + hash.length];
-		for (int i = 0; i < saltedHash.length; i++) {
-			if (i < salt.length) {
-				saltedHash[i] = salt[i];
-			} else {
-				saltedHash[i] = hash[i - salt.length];
-			}
-		}
+		byte[] saltedHash = concatenateArrays(salt, hash);
 		return saltedHash;
 	}
-
+	public byte[] concatenateArrays(byte[] arr1,byte[] arr2) {
+		byte[] newArr=new byte[arr1.length+arr2.length];
+		for (int i = 0; i < newArr.length; i++) {
+			if(i<arr1.length) {
+				newArr[i]=arr1[i];
+			}else {
+				newArr[i]=arr2[i-arr1.length];
+			}
+		}
+		return newArr;
+	}
 	/**
 	 * 
 	 * @param input
@@ -146,14 +142,7 @@ public class HashingUtil {
 		if (salt == null) {
 			return checkHash(input, hash, algorithm);
 		}
-		byte[] saltedInput = new byte[salt.length + input.length];
-		for (int i = 0; i < saltedInput.length; i++) {
-			if (i < salt.length) {
-				saltedInput[i] = salt[i];
-			} else {
-				saltedInput[i] = input[i - salt.length];
-			}
-		}
+		byte[] saltedInput = concatenateArrays(salt, hash);
 		byte[] inHash = getHash(saltedInput, algorithm);
 		return hash.equals(inHash);
 	}
