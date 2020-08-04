@@ -26,17 +26,37 @@ public class HashingUtil {
 		MessageDigest sha = MessageDigest.getInstance(algorithm);
 		return sha.digest(input);
 	}
+
 	public boolean checkHash(byte[] input, byte[] hash, String algorithm) throws NoSuchAlgorithmException {
 		byte[] inHash = getHash(input, algorithm);
 		return hash.equals(inHash);
 	}
+
 	public boolean checkHashSHA256(byte[] input, byte[] hash) {
 		byte[] inHash = getHashSHA256(input);
 		return hash.equals(inHash);
-	}public boolean checkHashSHA512(byte[] input, byte[] hash) {
+	}
+
+	public boolean checkHashSHA512(byte[] input, byte[] hash) {
 		byte[] inHash = getHashSHA512(input);
 		return hash.equals(inHash);
 	}
+
+	public boolean checkHash(String input, byte[] hash, String algorithm) throws NoSuchAlgorithmException {
+		byte[] inHash = getHash(input, algorithm);
+		return hash.equals(inHash);
+	}
+
+	public boolean checkHashSHA256(String input, byte[] hash) {
+		byte[] inHash = getHashSHA256(input);
+		return hash.equals(inHash);
+	}
+
+	public boolean checkHashSHA512(String input, byte[] hash) {
+		byte[] inHash = getHashSHA512(input);
+		return hash.equals(inHash);
+	}
+
 	public byte[] getHashSHA256(byte[] input) {
 		try {
 			return getHash(input, ALGO_SHA_256);
