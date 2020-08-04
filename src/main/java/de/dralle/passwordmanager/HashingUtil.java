@@ -29,5 +29,12 @@ public class HashingUtil {
 			e.printStackTrace();
 		}
 		return null;
+	}public byte[] getHashSHA512(byte[] input) {
+		try {
+			return getHash(input, ALGO_SHA_512);
+		} catch (NoSuchAlgorithmException e) {			
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
