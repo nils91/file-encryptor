@@ -5,6 +5,7 @@ package de.dralle.passwordmanager;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 /**
  * @author Nils Dralle
@@ -91,5 +92,82 @@ public class HashingUtil {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param input
+	 * @param salt      Salt will be generated randomly and be written into the
+	 *                  given array. It will also be added to the front of the
+	 *                  returned hash. Salt length is determined by the size of this
+	 *                  array. If salt is null, just the hash of input will be
+	 *                  returned.
+	 * @param algorithm
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
+	public byte[] getSaltedHash(byte[] input, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
+		if (salt == null) {
+			return getHash(input, algorithm);
+		}
+		SecureRandom.getInstanceStrong().nextBytes(salt);
+		byte[] saltedInput = new byte[salt.length + input.length];
+		for (int i = 0; i < saltedInput.length; i++) {
+			if (i < salt.length) {
+				saltedInput[i] = salt[i];
+			} else {
+				saltedInput[i] = input[i - salt.length];
+			}
+		}
+		byte[] hash = getHash(saltedInput, algorithm);
+		byte[] saltedHash = new byte[salt.length + hash.length];
+		for (int i = 0; i < saltedHash.length; i++) {
+			if (i < salt.length) {
+				saltedHash[i] = salt[i];
+			} else {
+				saltedHash[i] = hash[i - salt.length];
+			}
+		}
+		return saltedHash;
+	}
+
+	/**
+	 * 
+	 * @param input
+	 * @param salt      Byte array to be combined with input as the salt before
+	 *                  hashing.
+	 * @param hash      Not salted hash.
+	 * @param algorithm
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
+	public boolean checkSaltedHash(byte[] input, byte[] salt, byte[] hash, String algorithm)
+			throws NoSuchAlgorithmException {
+		if (salt == null) {
+			return checkHash(input, hash, algorithm);
+		}
+		byte[] saltedInput = new byte[salt.length + input.length];
+		for (int i = 0; i < saltedInput.length; i++) {
+			if (i < salt.length) {
+				saltedInput[i] = salt[i];
+			} else {
+				saltedInput[i] = input[i - salt.length];
+			}
+		}
+		byte[] inHash = getHash(saltedInput, algorithm);
+		return hash.equals(inHash);
+	}
+
+	public boolean checkSaltedHash(byte[] input, int saltLen, byte[] saltedHash, String algorithm)
+			throws NoSuchAlgorithmException {
+		byte[] salt = new byte[saltLen];
+		for (int i = 0; i < salt.length; i++) {
+			salt[i] = saltedHash[i];
+		}
+		byte[] hash = new byte[saltedHash.length - saltLen];
+		for (int i = 0; i < hash.length; i++) {
+			hash[i] = saltedHash[saltLen + i];
+		}
+		return checkSaltedHash(input, salt, hash, algorithm);
 	}
 }
