@@ -222,6 +222,58 @@ class HashingUtilTest {
 		String input = "1234567890";
 		byte[] hash = HashingUtil.getHashSHA512(input);
 		assertNotNull(hash);
+	}@Test
+	void testCheckSHA256HashStringLC() {
+		String input = "abcdefghijklmnopqrstuvwxyz";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertTrue(HashingUtil.checkHashSHA256(input, hash));
+	}
+
+	@Test
+	void testCheckSHA256HashStringUC() {
+		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertTrue(HashingUtil.checkHashSHA256(input, hash));
+	}
+
+	@Test
+	void testCheckSHA256HashStringSC() {
+		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertTrue(HashingUtil.checkHashSHA256(input, hash));
+	}
+
+	@Test
+	void testCheckSHA256HashStringNumeric() {
+		String input = "1234567890";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertTrue(HashingUtil.checkHashSHA256(input, hash));
+	}	@Test
+	void testCheckSHA512HashStringLC() {
+		String input = "abcdefghijklmnopqrstuvwxyz";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertTrue(HashingUtil.checkHashSHA512(input, hash));
+	}
+
+	@Test
+	void testCheckSHA512HashStringUC() {
+		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertTrue(HashingUtil.checkHashSHA512(input, hash));
+	}
+
+	@Test
+	void testCheckSHA512HashStringSC() {
+		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertTrue(HashingUtil.checkHashSHA512(input, hash));
+	}
+
+	@Test
+	void testCheckSHA512HashStringNumeric() {
+		String input = "1234567890";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertTrue(HashingUtil.checkHashSHA512(input, hash));
 	}
 
 }
