@@ -196,7 +196,9 @@ class HashingUtilTest {
 		String input = "1234567890";
 		byte[] hash = HashingUtil.getHashSHA256(input);
 		assertNotNull(hash);
-	}	@Test
+	}
+
+	@Test
 	void testSHA512HashStringLC() {
 		String input = "abcdefghijklmnopqrstuvwxyz";
 		byte[] hash = HashingUtil.getHashSHA512(input);
@@ -222,7 +224,9 @@ class HashingUtilTest {
 		String input = "1234567890";
 		byte[] hash = HashingUtil.getHashSHA512(input);
 		assertNotNull(hash);
-	}@Test
+	}
+
+	@Test
 	void testCheckSHA256HashStringLC() {
 		String input = "abcdefghijklmnopqrstuvwxyz";
 		byte[] hash = HashingUtil.getHashSHA256(input);
@@ -248,7 +252,9 @@ class HashingUtilTest {
 		String input = "1234567890";
 		byte[] hash = HashingUtil.getHashSHA256(input);
 		assertTrue(HashingUtil.checkHashSHA256(input, hash));
-	}	@Test
+	}
+
+	@Test
 	void testCheckSHA512HashStringLC() {
 		String input = "abcdefghijklmnopqrstuvwxyz";
 		byte[] hash = HashingUtil.getHashSHA512(input);
@@ -274,6 +280,15 @@ class HashingUtilTest {
 		String input = "1234567890";
 		byte[] hash = HashingUtil.getHashSHA512(input);
 		assertTrue(HashingUtil.checkHashSHA512(input, hash));
+	}
+
+	@Test
+	void testConcatArrays() {
+		byte[] arr1 = new byte[] { 0, 1, 2, 3, 4 };
+		byte[] arr2 = new byte[] { 5, 6, 7, 8, 9 };
+		byte[] expected = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		byte[] actual = HashingUtil.concatenateArrays(arr1, arr2);
+		assertArrayEquals(expected, actual);
 	}
 
 }
