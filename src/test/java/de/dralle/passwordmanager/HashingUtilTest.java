@@ -303,4 +303,13 @@ class HashingUtilTest {
 		assertTrue(HashingUtil.checkSaltedHashSHA512(input, hash));
 	}
 
+	@Test
+	void testOutput() {
+		String input="Hello World!";
+		for (int i = 0; i < 10000; i++) {
+			String b64Hash=StringUtil.byteArrToStr(Base64Util.encodeByte(HashingUtil.getSaltedHashIncludingSaltLenSHA512(input, new byte[4])));
+		System.out.println(b64Hash);
+		}
+		
+	}
 }
