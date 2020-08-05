@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -302,7 +303,7 @@ class HashingUtilTest {
 		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA512(input, new byte[4]);
 		assertTrue(HashingUtil.checkSaltedHashSHA512(input, hash));
 	}
-
+@Disabled
 	@Test
 	void testOutput() {
 		String input="Hello World!";
@@ -311,5 +312,73 @@ class HashingUtilTest {
 		System.out.println(b64Hash);
 		}
 		
+	}@Test
+	void testCheckFailSHA256HashStringLC() {
+		String input = "abcdefghijklmnopqrstuvwxyz";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertFalse(HashingUtil.checkHashSHA256(input+" ", hash));
+	}
+
+	@Test
+	void testCheckFailSHA256HashStringUC() {
+		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertFalse(HashingUtil.checkHashSHA256(input+" ", hash));
+	}
+
+	@Test
+	void testCheckFailSHA256HashStringSC() {
+		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertFalse(HashingUtil.checkHashSHA256(input+" ", hash));
+	}
+
+	@Test
+	void testCheckFailSHA256HashStringNumeric() {
+		String input = "1234567890";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertFalse(HashingUtil.checkHashSHA256(input+" ", hash));
+	}
+
+	@Test
+	void testCheckFailSHA512HashStringLC() {
+		String input = "abcdefghijklmnopqrstuvwxyz";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertFalse(HashingUtil.checkHashSHA512(input+" ", hash));
+	}
+
+	@Test
+	void testCheckFailSHA512HashStringUC() {
+		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertFalse(HashingUtil.checkHashSHA512(input+" ", hash));
+	}
+
+	@Test
+	void testCheckFailSHA512HashStringSC() {
+		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertFalse(HashingUtil.checkHashSHA512(input+" ", hash));
+	}
+
+	@Test
+	void testCheckFailSHA512HashStringNumeric() {
+		String input = "1234567890";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertFalse(HashingUtil.checkHashSHA512(input+" ", hash));
+	}
+
+	
+	@Test
+	void testFullSaltedHashSHA256CheckFail() {
+		String input="Hello World!";
+		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA256(input, new byte[4]);
+		assertFalse(HashingUtil.checkSaltedHashSHA256(input+" ", hash));
+	}
+	@Test
+	void testFullSaltedHashSHA512CheckFail() {
+		String input="Hello World!";
+		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA512(input, new byte[4]);
+		assertFalse(HashingUtil.checkSaltedHashSHA512(input+" ", hash));
 	}
 }
