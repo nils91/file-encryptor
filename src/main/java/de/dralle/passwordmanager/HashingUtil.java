@@ -103,7 +103,7 @@ public class HashingUtil {
 	 *                  array. If salt is null, just the hash of input will be
 	 *                  returned.
 	 * @param algorithm
-	 * @return Salted hash. The salt will be added in font of the hash.
+	 * @return Salted hash. The salt will be added in front of the hash.
 	 * @throws NoSuchAlgorithmException
 	 */
 	public byte[] getSaltedHash(byte[] input, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
@@ -115,6 +115,26 @@ public class HashingUtil {
 		byte[] hash = getHash(saltedInput, algorithm);
 		byte[] saltedHash = concatenateArrays(salt, hash);
 		return saltedHash;
+	}/**
+	 * The first byte of the returned salted hash is the length of the salt.
+	 * @param input
+	 * @param salt      Salt will be generated randomly and be written into the
+	 *                  given array. It will also be added to the front of the
+	 *                  returned hash. Salt length is determined by the size of this
+	 *                  array. If salt is null, just the hash of input will be
+	 *                  returned.
+	 * @param algorithm
+	 * @return Salted hash. The salt will be added in front of the hash.
+	 * @throws NoSuchAlgorithmException
+	 */
+	public byte[] getSaltedHashIncludingSaltLen(byte[] input, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
+		if (salt == null) {
+			return getHash(input, algorithm);
+		}
+		int saltLen=salt.length;
+		byte[] saltedHash = getSaltedHash(input, salt, algorithm);
+		byte[] saltedHashWSaltLen = concatenateArrays(new byte[] {(byte) saltLen}, saltedHash);
+		return saltedHashWSaltLen;
 	}
 	public byte[] concatenateArrays(byte[] arr1,byte[] arr2) {
 		byte[] newArr=new byte[arr1.length+arr2.length];
