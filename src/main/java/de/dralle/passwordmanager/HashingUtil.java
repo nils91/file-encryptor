@@ -6,6 +6,7 @@ package de.dralle.passwordmanager;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 /**
  * @author Nils Dralle
@@ -30,32 +31,32 @@ public class HashingUtil {
 
 	public static  boolean checkHash(byte[] input, byte[] hash, String algorithm) throws NoSuchAlgorithmException {
 		byte[] inHash = getHash(input, algorithm);
-		return hash.equals(inHash);
+		return Arrays.equals(hash, inHash);
 	}
 
 	public static  boolean checkHashSHA256(byte[] input, byte[] hash) {
 		byte[] inHash = getHashSHA256(input);
-		return hash.equals(inHash);
+		return Arrays.equals(hash, inHash);
 	}
 
 	public static  boolean checkHashSHA512(byte[] input, byte[] hash) {
 		byte[] inHash = getHashSHA512(input);
-		return hash.equals(inHash);
+		return Arrays.equals(hash, inHash);
 	}
 
 	public static  boolean checkHash(String input, byte[] hash, String algorithm) throws NoSuchAlgorithmException {
 		byte[] inHash = getHash(input, algorithm);
-		return hash.equals(inHash);
+		return Arrays.equals(hash, inHash);
 	}
 
 	public  static boolean checkHashSHA256(String input, byte[] hash) {
 		byte[] inHash = getHashSHA256(input);
-		return hash.equals(inHash);
+		return Arrays.equals(hash, inHash);
 	}
 
 	public  static boolean checkHashSHA512(String input, byte[] hash) {
 		byte[] inHash = getHashSHA512(input);
-		return hash.equals(inHash);
+		return Arrays.equals(hash, inHash);
 	}
 
 	public  static byte[] getHashSHA256(byte[] input) {
