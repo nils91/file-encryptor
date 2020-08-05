@@ -277,4 +277,88 @@ public class HashingUtil {
 		byte[] inputArr = StringUtil.strToByteArr(input);
 		return checkSaltedHash(inputArr, saltedHash, algorithm);
 	}
+
+	/**
+	 * 
+	 * @param input
+	 * @param salt  Salt will be generated randomly and be written into the given
+	 *              array. It will also be added to the front of the returned hash.
+	 *              Salt length is determined by the size of this array. If salt is
+	 *              null, just the hash of input will be returned.
+	 * @return Salted hash. The salt will be added in front of the hash.
+	 */
+	public byte[] getSaltedHashSHA256(String input, byte[] salt) {
+		try {
+			return getSaltedHash(input, salt, ALGO_SHA_256);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * The first byte of the returned salted hash is the length of the salt.
+	 * 
+	 * @param input
+	 * @param salt  Salt will be generated randomly and be written into the given
+	 *              array. It will also be added to the front of the returned hash.
+	 *              Salt length is determined by the size of this array. If salt is
+	 *              null, just the hash of input will be returned.
+	 * @return Salted hash. The salt will be added in front of the hash.
+	 */
+	public byte[] getSaltedHashIncludingSaltLenSHA256(String input, byte[] salt) {
+		try {
+			return getSaltedHashIncludingSaltLen(input, salt, ALGO_SHA_256);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param input
+	 * @param salt  Byte array to be combined with input as the salt before hashing.
+	 * @param hash  Not salted hash.
+	 * @return
+	 */
+	public boolean checkSaltedHashSHA256(String input, byte[] salt, byte[] hash) {
+		try {
+			return checkSaltedHash(input, salt, hash, ALGO_SHA_256);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean checkSaltedHashSHA256(String input, int saltLen, byte[] saltedHash) {
+		try {
+			return checkSaltedHash(input, saltLen, saltedHash, ALGO_SHA_256);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * If no salt length is given, it is assumed that the first byte of saltedHash
+	 * is the salt length.
+	 * 
+	 * @param input
+	 * @param saltedHash
+	 * @return
+	 */
+	public boolean checkSaltedHashSHA256(String input, byte[] saltedHash) {
+		try {
+			return checkSaltedHash(input, saltedHash, ALGO_SHA_256);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
