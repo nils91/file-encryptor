@@ -169,9 +169,9 @@ public class HashingUtil {
 		if (salt == null) {
 			return checkHash(input, hash, algorithm);
 		}
-		byte[] saltedInput = concatenateArrays(salt, hash);
+		byte[] saltedInput = concatenateArrays(salt, input);
 		byte[] inHash = getHash(saltedInput, algorithm);
-		return hash.equals(inHash);
+		return Arrays.equals(hash, inHash);
 	}
 
 	public static  boolean checkSaltedHash(byte[] input, int saltLen, byte[] saltedHash, String algorithm)
