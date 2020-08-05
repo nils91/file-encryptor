@@ -290,5 +290,17 @@ class HashingUtilTest {
 		byte[] actual = HashingUtil.concatenateArrays(arr1, arr2);
 		assertArrayEquals(expected, actual);
 	}
+	@Test
+	void testFullSaltedHashSHA256() {
+		String input="Hello World!";
+		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA256(input, new byte[4]);
+		assertTrue(HashingUtil.checkSaltedHashSHA256(input, hash));
+	}
+	@Test
+	void testFullSaltedHashSHA512() {
+		String input="Hello World!";
+		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA512(input, new byte[4]);
+		assertTrue(HashingUtil.checkSaltedHashSHA512(input, hash));
+	}
 
 }
