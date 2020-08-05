@@ -58,7 +58,7 @@ class HashingUtilTest {
 	}
 
 	@Test
-	void testHashSameWhenInputSameSHA1() throws NoSuchAlgorithmException {		
+	void testHashSameWhenInputSameSHA1() throws NoSuchAlgorithmException {
 		byte[] inputBytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		byte[] hashBytes = HashingUtil.getHash(inputBytes, HashingUtil.ALGO_SHA_1);
 		byte[] inputBytes2 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -128,7 +128,7 @@ class HashingUtilTest {
 	}
 
 	@Test
-	void testHashNotSameAsInputSHA512() {	
+	void testHashNotSameAsInputSHA512() {
 		byte[] inputBytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		byte[] hashBytes = HashingUtil.getHashSHA512(inputBytes);
 		boolean notsame = false;
@@ -162,12 +162,66 @@ class HashingUtilTest {
 	}
 
 	@Test
-	void testHashSameWhenInputSameSHA512() {	
+	void testHashSameWhenInputSameSHA512() {
 		byte[] inputBytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		byte[] hashBytes = HashingUtil.getHashSHA512(inputBytes);
 		byte[] inputBytes2 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 		byte[] hashBytes2 = HashingUtil.getHashSHA512(inputBytes2);
 		assertArrayEquals(hashBytes, hashBytes2);
+	}
+
+	@Test
+	void testSHA256HashStringLC() {
+		String input = "abcdefghijklmnopqrstuvwxyz";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertNotNull(hash);
+	}
+
+	@Test
+	void testSHA256HashStringUC() {
+		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertNotNull(hash);
+	}
+
+	@Test
+	void testSHA256HashStringSC() {
+		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertNotNull(hash);
+	}
+
+	@Test
+	void testSHA256HashStringNumeric() {
+		String input = "1234567890";
+		byte[] hash = HashingUtil.getHashSHA256(input);
+		assertNotNull(hash);
+	}	@Test
+	void testSHA512HashStringLC() {
+		String input = "abcdefghijklmnopqrstuvwxyz";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertNotNull(hash);
+	}
+
+	@Test
+	void testSHA512HashStringUC() {
+		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertNotNull(hash);
+	}
+
+	@Test
+	void testSHA512HashStringSC() {
+		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertNotNull(hash);
+	}
+
+	@Test
+	void testSHA512HashStringNumeric() {
+		String input = "1234567890";
+		byte[] hash = HashingUtil.getHashSHA512(input);
+		assertNotNull(hash);
 	}
 
 }
