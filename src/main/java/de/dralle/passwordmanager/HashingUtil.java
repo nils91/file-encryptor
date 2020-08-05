@@ -159,4 +159,21 @@ public class HashingUtil {
 		}
 		return checkSaltedHash(input, salt, hash, algorithm);
 	}
+	/**
+	 * If no salt length is given, it is assumed that the first byte of saltedHash is the salt length.
+	 * @param input
+	 * @param saltedHash
+	 * @param algorithm
+	 * @return
+	 * @throws NoSuchAlgorithmException
+	 */
+	public boolean checkSaltedHash(byte[] input, byte[] saltedHash, String algorithm)
+			throws NoSuchAlgorithmException {
+		int saltLen=saltedHash[0];
+		byte[] saltedHashWOSaltLen = new byte[saltedHash.length-1];
+		for (int i = 0; i < saltedHashWOSaltLen.length; i++) {
+			saltedHashWOSaltLen[i]=saltedHash[i+1];
+		}
+		return checkSaltedHash(input, saltLen, saltedHashWOSaltLen, algorithm);
+	}
 }
