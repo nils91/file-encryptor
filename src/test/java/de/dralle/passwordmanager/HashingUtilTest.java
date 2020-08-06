@@ -291,94 +291,100 @@ class HashingUtilTest {
 		byte[] actual = HashingUtil.concatenateArrays(arr1, arr2);
 		assertArrayEquals(expected, actual);
 	}
+
 	@Test
 	void testFullSaltedHashSHA256() {
-		String input="Hello World!";
+		String input = "Hello World!";
 		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA256(input, new byte[4]);
 		assertTrue(HashingUtil.checkSaltedHashSHA256(input, hash));
 	}
+
 	@Test
 	void testFullSaltedHashSHA512() {
-		String input="Hello World!";
+		String input = "Hello World!";
 		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA512(input, new byte[4]);
 		assertTrue(HashingUtil.checkSaltedHashSHA512(input, hash));
 	}
-@Disabled
+
+	@Disabled
 	@Test
 	void testOutput() {
-		String input="Hello World!";
+		String input = "Hello World!";
 		for (int i = 0; i < 10000; i++) {
-			String b64Hash=StringUtil.byteArrToStr(Base64Util.encodeByte(HashingUtil.getSaltedHashIncludingSaltLenSHA512(input, new byte[4])));
-		System.out.println(b64Hash);
+			String b64Hash = Base64Util
+					.encodeBytes2Str(HashingUtil.getSaltedHashIncludingSaltLenSHA512(input, new byte[4]));
+			System.out.println(b64Hash);
 		}
-		
-	}@Test
+
+	}
+
+	@Test
 	void testCheckFailSHA256HashStringLC() {
 		String input = "abcdefghijklmnopqrstuvwxyz";
 		byte[] hash = HashingUtil.getHashSHA256(input);
-		assertFalse(HashingUtil.checkHashSHA256(input+" ", hash));
+		assertFalse(HashingUtil.checkHashSHA256(input + " ", hash));
 	}
 
 	@Test
 	void testCheckFailSHA256HashStringUC() {
 		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		byte[] hash = HashingUtil.getHashSHA256(input);
-		assertFalse(HashingUtil.checkHashSHA256(input+" ", hash));
+		assertFalse(HashingUtil.checkHashSHA256(input + " ", hash));
 	}
 
 	@Test
 	void testCheckFailSHA256HashStringSC() {
 		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
 		byte[] hash = HashingUtil.getHashSHA256(input);
-		assertFalse(HashingUtil.checkHashSHA256(input+" ", hash));
+		assertFalse(HashingUtil.checkHashSHA256(input + " ", hash));
 	}
 
 	@Test
 	void testCheckFailSHA256HashStringNumeric() {
 		String input = "1234567890";
 		byte[] hash = HashingUtil.getHashSHA256(input);
-		assertFalse(HashingUtil.checkHashSHA256(input+" ", hash));
+		assertFalse(HashingUtil.checkHashSHA256(input + " ", hash));
 	}
 
 	@Test
 	void testCheckFailSHA512HashStringLC() {
 		String input = "abcdefghijklmnopqrstuvwxyz";
 		byte[] hash = HashingUtil.getHashSHA512(input);
-		assertFalse(HashingUtil.checkHashSHA512(input+" ", hash));
+		assertFalse(HashingUtil.checkHashSHA512(input + " ", hash));
 	}
 
 	@Test
 	void testCheckFailSHA512HashStringUC() {
 		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		byte[] hash = HashingUtil.getHashSHA512(input);
-		assertFalse(HashingUtil.checkHashSHA512(input+" ", hash));
+		assertFalse(HashingUtil.checkHashSHA512(input + " ", hash));
 	}
 
 	@Test
 	void testCheckFailSHA512HashStringSC() {
 		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
 		byte[] hash = HashingUtil.getHashSHA512(input);
-		assertFalse(HashingUtil.checkHashSHA512(input+" ", hash));
+		assertFalse(HashingUtil.checkHashSHA512(input + " ", hash));
 	}
 
 	@Test
 	void testCheckFailSHA512HashStringNumeric() {
 		String input = "1234567890";
 		byte[] hash = HashingUtil.getHashSHA512(input);
-		assertFalse(HashingUtil.checkHashSHA512(input+" ", hash));
+		assertFalse(HashingUtil.checkHashSHA512(input + " ", hash));
 	}
 
-	
 	@Test
 	void testFullSaltedHashSHA256CheckFail() {
-		String input="Hello World!";
+		String input = "Hello World!";
 		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA256(input, new byte[4]);
-		assertFalse(HashingUtil.checkSaltedHashSHA256(input+" ", hash));
+		assertFalse(HashingUtil.checkSaltedHashSHA256(input + " ", hash));
 	}
+
 	@Test
 	void testFullSaltedHashSHA512CheckFail() {
-		String input="Hello World!";
+		String input = "Hello World!";
 		byte[] hash = HashingUtil.getSaltedHashIncludingSaltLenSHA512(input, new byte[4]);
-		assertFalse(HashingUtil.checkSaltedHashSHA512(input+" ", hash));
+		assertFalse(HashingUtil.checkSaltedHashSHA512(input + " ", hash));
 	}
 }

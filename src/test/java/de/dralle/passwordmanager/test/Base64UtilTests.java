@@ -24,7 +24,7 @@ class Base64UtilTests {
 	@Test
 	void testByteEncodingDecoding() {
 		byte[] inputBytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-		byte[] encodedBytes = Base64Util.encodeByte(inputBytes);
+		byte[] encodedBytes = Base64Util.encodeBytes(inputBytes);
 		byte[] decodedBytes = Base64Util.decodeBytes(encodedBytes);
 		assertArrayEquals(inputBytes, decodedBytes);
 	}
