@@ -28,7 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class AESUtil {
 	public static final String PADDING_MODE = "NoPadding";
 	public static final String ALGO_SUBMODE = "GCM";
-	private static final int AUTH_TAG_LENGTH = 128;
+	public static final int AUTH_TAG_LENGTH = 128;
 	public static final String ALGO_KEYGEN_PW = "PBKDF2WithHmacSHA256";
 	public static final int KEYGEN_ITERATION_CNT = 65536;
 	public static final String ALGO_ENCRYPTION = "AES";
@@ -59,11 +59,23 @@ public class AESUtil {
 	 * @return
 	 */
 	public static SecretKey generateKeyFromPassword(String password, byte[] salt) {
-		try {
-			SecureRandom.getInstanceStrong().nextBytes(salt);
-		} catch (NoSuchAlgorithmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		return generateKeyFromPassword(password, salt, false);
+	}
+
+	/**
+	 * 
+	 * @param password
+	 * @param salt     The salt is generated randomly and written to this array.
+	 * @return
+	 */
+	public static SecretKey generateKeyFromPassword(String password, byte[] salt, boolean skipRandomSaltGeneration) {
+		if (!skipRandomSaltGeneration) {
+			try {
+				SecureRandom.getInstanceStrong().nextBytes(salt);
+			} catch (NoSuchAlgorithmException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		SecretKeyFactory factory = null;
 		try {
@@ -93,8 +105,8 @@ public class AESUtil {
 	 * 
 	 * @param input
 	 * @param key
-	 * @param iv    The IV is randomly generated in this method. üIt should be 16
-	 *              byte (to math the auth tag). Check the contents after calling
+	 * @param iv    The IV is randomly generated in this method. It should be 16
+	 *              byte (to match the auth tag). Check the contents after calling
 	 *              for the used iv. The same IV needs to be used for encryption and
 	 *              decryption.
 	 * @return
@@ -136,6 +148,62 @@ public class AESUtil {
 			e.printStackTrace();
 		}
 		return enc;
+	}
+
+	/**
+	 * Salt and IV are both added in front. Salt is optional and not added if null,
+	 * in case the key wasn´t generated from a password.
+	 * 
+	 * @param encrypted
+	 * @param salt
+	 * @param iv
+	 * @return
+	 */
+	public static byte[] addSaltAndIV(byte[] encrypted, byte[] salt, byte[] iv) {
+		int ivLen = iv.length;
+		int saltLen = -1;
+		if (salt != null) {
+			saltLen = salt.length;
+		}
+		byte[] ivWithLen = HashingUtil.concatenateArrays(new byte[] { (byte) ivLen }, iv);
+		byte[] saltWithLen = null;
+		if (saltLen > 0) {
+			saltWithLen = HashingUtil.concatenateArrays(new byte[] { (byte) saltLen }, salt);
+		}
+		byte[] prefix = ivWithLen;
+		if (saltWithLen != null) {
+			// add salt to prefix if theres a salt
+			prefix = HashingUtil.concatenateArrays(saltWithLen, ivWithLen);
+		}
+		return HashingUtil.concatenateArrays(prefix, encrypted);
+	}
+
+	public static byte[] decryptAssumingOnlyIVPrefix(byte[] input, SecretKey key) {
+		int ivlen = input[0];
+		byte[] iv = new byte[ivlen];
+		for (int i = 0; i < iv.length; i++) {
+			iv[i] = input[i + 1];
+		}
+		byte[] inputNoPrefix = new byte[input.length - ivlen - 1];
+		for (int i = 0; i < inputNoPrefix.length; i++) { // remove iv prefix
+			inputNoPrefix[i] = input[1 + ivlen + i];
+		}
+		return decrypt(inputNoPrefix, key, iv);
+
+	}
+
+	public static byte[] decryptAssumingSaltAndIVPrefix(byte[] input, String password) {
+		int saltlen = input[0];
+		byte[] salt = new byte[saltlen];
+		for (int i = 0; i < salt.length; i++) {
+			salt[i] = input[i + 1];
+		}
+		byte[] inputNoSaltPrefix = new byte[input.length - saltlen - 1];
+		for (int i = 0; i < inputNoSaltPrefix.length; i++) { // remove salt prefix
+			inputNoSaltPrefix[i] = input[1 + saltlen + i];
+		}
+		SecretKey key = generateKeyFromPassword(password, salt, true);
+		return decryptAssumingOnlyIVPrefix(inputNoSaltPrefix, key);
 	}
 
 	public static byte[] decrypt(byte[] input, SecretKey key, byte[] iv) {
