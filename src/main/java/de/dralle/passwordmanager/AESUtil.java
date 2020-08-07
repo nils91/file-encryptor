@@ -15,8 +15,8 @@ import javax.crypto.SecretKey;
  */
 public class AESUtil {
 	public static final String ALGO_ENCRYPTION="AES";
-	public static final int KEYSIZE_BITTS=256;
-	public static final int KEYSIZE_BYTES=8;
+	public static final int KEYSIZE_BITS=256;
+	public static final int KEYSIZE_BYTES=KEYSIZE_BITS/8;
 	public static SecretKey generateRandomKey() {
 		KeyGenerator keygen = null;
 		try {
@@ -26,7 +26,7 @@ public class AESUtil {
 			e.printStackTrace();
 		}
 		try {
-			keygen.init(256,SecureRandom.getInstanceStrong());
+			keygen.init(KEYSIZE_BITS,SecureRandom.getInstanceStrong());
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
