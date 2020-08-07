@@ -88,7 +88,7 @@ class BasicSymmetricEncryptionTests {
 	@Test
 	void testAESKeyGenerationFromPW() {
 		String pw = "Passwort123";
-		byte[] salt = new byte[] { 0, 0, 0, 0 };
+		byte[] salt = new byte[] { 0,0,0,0 };
 		SecretKeyFactory factory = null;
 		try {
 			factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
