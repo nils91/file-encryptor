@@ -3,6 +3,8 @@
  */
 package de.dralle.fileenc;
 
+import java.net.URISyntaxException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -15,16 +17,40 @@ import org.apache.commons.cli.ParseException;
  *
  */
 public class FileEncryptorCLIApp {
+	private boolean verbose;
 
 	public void run(String[] args) {
-		Options options=prepareOptions();
-		CommandLine cmd = parseCLI(args,options);
-		if(cmd.hasOption("h")) {
+		Options options = prepareOptions();
+		CommandLine cmd = parseCLI(args, options);
+		if (cmd.hasOption("t")) {
+			verbose = true;
+		}
+		if (verbose) {
+			try {
+				System.out.print(
+						FileEncryptorCLIApp.class.getProtectionDomain().getCodeSource().getLocation().getFile() + " ");
+			} catch (Exception e) {
+			}
+			for (int i = 0; i < args.length; i++) {
+				System.out.print(args[i] + " ");
+			}
+			System.out.println();
+		}
+		if (cmd.hasOption("h")) {
 			showHelp(options);
+		} else if (cmd.hasOption("e")) {
+			encrypt(cmd);
 		}
 	}
 
-	private CommandLine parseCLI(String[] args, Options options) {		
+	private void encrypt(CommandLine cmd) {
+		if(verbose) {
+			System.out.println("Encryption mode");
+		}
+
+	}
+
+	private CommandLine parseCLI(String[] args, Options options) {
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
 		try {
@@ -42,7 +68,6 @@ public class FileEncryptorCLIApp {
 	private void showHelp(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("File Encryptor", options);
-		System.exit(0);
 	}
 
 	private Options prepareOptions() {
@@ -60,7 +85,8 @@ public class FileEncryptorCLIApp {
 		options.addOption("w", "writekey", false, "Write the key to the console once operation is complete");
 		options.addOption("h", "help", false, "Show usage instructions");
 		options.addOption("v", "version", false, "Show version information");
-		options.addOption("g","gui",false,"Show GUI");
+		options.addOption("g", "gui", false, "Show GUI");
+		options.addOption("b", "blocks", true, "Encrypt the file in block instead of as a whole");
 		return options;
 	}
 
