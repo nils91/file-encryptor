@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>de.dralle.passwordmanager</groupId>
+	<groupId>de.dralle.fileenc</groupId>
 	<artifactId>all</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
-	<name>password-manager</name>
+	<name>file-encryptor</name>
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
