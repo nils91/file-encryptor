@@ -93,16 +93,7 @@ public class FileEncryptorCLIApp {
 				System.out.println("Specified output file: "+outputFilePath);
 			}
 			File f = new File(outputFilePath);
-			if(!f.exists()) {
-					System.out.println("Output file does not exist");
-				
-				System.exit(1);
-			}
-			if(!f.canWrite()) {
-					System.out.println("Output file can not be written to");
-				
-				System.exit(1);
-			}
+			
 			outputFile=f;
 		}else {
 			if(verbose) {
@@ -120,8 +111,11 @@ public class FileEncryptorCLIApp {
 		try {
 			in = new FileInputStream(inputFile);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error while opening input file");
+			if(verbose) {
+				e.printStackTrace();
+			}
+			System.exit(1);
 		}
 		BufferedInputStream bin=new BufferedInputStream(in);
 		List<Byte> allBytes=new ArrayList<Byte>();
@@ -129,13 +123,14 @@ public class FileEncryptorCLIApp {
 		try {
 			while(bin.available()>0) {
 				int nextByte=bin.read();
-				if(nextByte!=-1) {
-					allBytes.add(Byte.valueOf((byte) nextByte));
-				}
+				allBytes.add(Byte.valueOf((byte) nextByte));
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error while reading input file");
+			if(verbose) {
+				e.printStackTrace();
+			}
+			System.exit(1);
 		}
 		completeFile=new byte[allBytes.size()];
 		for (int i = 0; i < completeFile.length; i++) {
@@ -147,8 +142,10 @@ public class FileEncryptorCLIApp {
 		try {
 			bin.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error while closing input file");
+			if(verbose) {
+				e.printStackTrace();
+			}
 		}
 		//Encrypt
 		SecretKey key = AESUtil.generateRandomKey();
@@ -160,21 +157,32 @@ public class FileEncryptorCLIApp {
 		try {
 			out = new FileOutputStream(outputFile);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error while opening output file");
+			if(verbose) {
+				e.printStackTrace();
+			}
+			System.exit(1);
 		}
 		BufferedOutputStream bout=new BufferedOutputStream(out);
 		try {
 			bout.write(completeFileEncryptedWithIVPrefix);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error while writing output file");
+			if(verbose) {
+				e.printStackTrace();
+			}
+			System.exit(1);
 		}
 		try {
 			bout.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error while closing output file");
+			if(verbose) {
+				e.printStackTrace();
+			}
+		}
+		if(verbose) {
+			System.out.println(completeFileEncryptedWithIVPrefix.length+" Bytes written");
 		}
 		if(cmd.hasOption("w")) {
 			System.out.println(Base64Util.encodeBytes2Str(key.getEncoded()));
