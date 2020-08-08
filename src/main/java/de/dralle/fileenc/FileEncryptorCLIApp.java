@@ -3,7 +3,22 @@
  */
 package de.dralle.fileenc;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.crypto.SecretKey;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -11,6 +26,9 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
+import de.dralle.util.AESUtil;
+import de.dralle.util.Base64Util;
 
 /**
  * @author Nils Dralle
@@ -46,6 +64,120 @@ public class FileEncryptorCLIApp {
 	private void encrypt(CommandLine cmd) {
 		if(verbose) {
 			System.out.println("Encryption mode");
+		}
+		String inputFilePath=null;
+		File inputFile=null;
+		String outputFilePath=null;
+		File outputFile=null;
+		if(cmd.hasOption("i")) {
+			inputFilePath=cmd.getOptionValue("i");
+			if(verbose) {
+				System.out.println("Specified input file: "+inputFilePath);
+			}
+			File f = new File(inputFilePath);
+			if(!f.exists()) {
+					System.out.println("Input file does not exist");
+				System.exit(1);
+			}
+			if(!f.canRead()) {
+					System.out.println("Input file can not be read");
+				System.exit(1);
+			}
+			inputFile=f;
+		}else {
+			System.out.println("No input file specified");
+		}
+		if(cmd.hasOption("o")) {
+			outputFilePath=cmd.getOptionValue("o");
+			if(verbose) {
+				System.out.println("Specified output file: "+outputFilePath);
+			}
+			File f = new File(outputFilePath);
+			if(!f.exists()) {
+					System.out.println("Output file does not exist");
+				
+				System.exit(1);
+			}
+			if(!f.canWrite()) {
+					System.out.println("Output file can not be written to");
+				
+				System.exit(1);
+			}
+			outputFile=f;
+		}else {
+			if(verbose) {
+				System.out.println("No output file specified");
+			}
+			outputFilePath=inputFile.getAbsolutePath()+".enc";
+			if(verbose) {
+				System.out.println("Output file set to: "+outputFilePath);
+			}
+			File f = new File(outputFilePath);
+			outputFile=f;
+		}
+		//Read file bytes
+		InputStream in = null;
+		try {
+			in = new FileInputStream(inputFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BufferedInputStream bin=new BufferedInputStream(in);
+		List<Byte> allBytes=new ArrayList<Byte>();
+		byte[] completeFile = null;
+		try {
+			if(bin.available()>0) {
+				int nextByte=bin.read();
+				if(nextByte!=-1) {
+					allBytes.add(Byte.valueOf((byte) nextByte));
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		completeFile=new byte[allBytes.size()];
+		for (int i = 0; i < completeFile.length; i++) {
+			completeFile[i]=allBytes.get(i);
+		}
+		if(verbose) {
+			System.out.println(completeFile.length+" Bytes read");
+		}
+		try {
+			bin.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//Encrypt
+		SecretKey key = AESUtil.generateRandomKey();
+		byte[] iv=new byte[16];
+		byte[] completeFileEncrypted=AESUtil.encrypt(completeFile, key, iv);
+		byte[] completeFileEncryptedWithIVPrefix = AESUtil.addSaltAndIV(completeFileEncrypted, null, iv);
+		//Write
+		OutputStream out = null;
+		try {
+			out = new FileOutputStream(outputFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BufferedOutputStream bout=new BufferedOutputStream(out);
+		try {
+			bout.write(completeFileEncryptedWithIVPrefix);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			bout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(cmd.hasOption("w")) {
+			System.out.println(Base64Util.encodeBytes2Str(key.getEncoded()));
 		}
 
 	}
