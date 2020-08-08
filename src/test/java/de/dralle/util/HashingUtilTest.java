@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.dralle.passwordmanager;
+package de.dralle.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +10,9 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import de.dralle.util.Base64Util;
+import de.dralle.util.HashingUtil;
 
 /**
  * @author Nils Dralle

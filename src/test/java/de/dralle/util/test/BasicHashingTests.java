@@ -1,4 +1,4 @@
-package de.dralle.passwordmanager.test;
+package de.dralle.util.test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

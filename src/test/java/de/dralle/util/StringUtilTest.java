@@ -1,8 +1,10 @@
-package de.dralle.passwordmanager;
+package de.dralle.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+
+import de.dralle.util.StringUtil;
 
 class StringUtilTest {
 

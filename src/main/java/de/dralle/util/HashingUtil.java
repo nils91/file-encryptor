@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.dralle.passwordmanager;
+package de.dralle.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

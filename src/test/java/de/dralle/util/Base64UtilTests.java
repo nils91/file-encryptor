@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.dralle.passwordmanager.test;
+package de.dralle.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,7 +12,7 @@ import java.util.Base64.Encoder;
 
 import org.junit.jupiter.api.Test;
 
-import de.dralle.passwordmanager.Base64Util;
+import de.dralle.util.Base64Util;
 
 /**
  * @author Nils Dralle

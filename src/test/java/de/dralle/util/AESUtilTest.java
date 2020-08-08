@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.dralle.passwordmanager;
+package de.dralle.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,6 +25,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import de.dralle.util.AESUtil;
 
 /**
  * @author Nils Dralle
