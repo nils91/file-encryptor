@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.dralle.fileenc</groupId>
-	<artifactId>all</artifactId>
+	<artifactId>file-encryptor</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 	<name>file-encryptor</name>
