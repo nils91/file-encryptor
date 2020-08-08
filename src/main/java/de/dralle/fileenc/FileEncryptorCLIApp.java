@@ -127,7 +127,7 @@ public class FileEncryptorCLIApp {
 		List<Byte> allBytes=new ArrayList<Byte>();
 		byte[] completeFile = null;
 		try {
-			if(bin.available()>0) {
+			while(bin.available()>0) {
 				int nextByte=bin.read();
 				if(nextByte!=-1) {
 					allBytes.add(Byte.valueOf((byte) nextByte));
