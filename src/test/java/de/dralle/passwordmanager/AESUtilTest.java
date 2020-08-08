@@ -31,11 +31,12 @@ import org.junit.jupiter.api.Test;
  *
  */
 class AESUtilTest {
-@Disabled
+	@Disabled
 	@Test
 	void test() {
 		fail("Not yet implemented");
 	}
+
 	@Test
 	void testAESAvailability() {
 		KeyGenerator keygen = null;
@@ -86,279 +87,48 @@ class AESUtilTest {
 	}
 
 	@Test
-	void testCipherAvailability() {
-		Cipher cipher = null;
-		try {
-			cipher = Cipher.getInstance("AES/GCM/NoPadding");
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		assertNotNull(cipher);
-	}
-
-	@Test
 	void testEncryptionDecryptionEasy() {
-		SecretKeySpec key;
-		key = new SecretKeySpec(new byte[32], "AES");
-		byte[] iv = new byte[12];
-		Cipher cipher = null;
 		byte[] plain = new byte[] { 1, 2, 3, 4 };
-		try {
-			cipher = Cipher.getInstance("AES/GCM/NoPadding");
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		try {
-			cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(128, iv));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		byte[] enc = null;
-		try {
-			enc = cipher.doFinal(plain);
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		try {
-			cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(128, iv));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		byte[] dec = null;
-		try {
-			dec = cipher.doFinal(enc);
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		byte[] iv = new byte[16];
+		SecretKey key = AESUtil.generateRandomKey();
+		byte[] enc = AESUtil.encrypt(plain, key, iv);
+		byte[] dec = AESUtil.decrypt(enc, key, iv);
 		assertArrayEquals(plain, dec);
 	}
 
 	@Test
 	void testEncryptionDecryptionBlockSmallerKey() {
-		SecretKeySpec key;
-		key = new SecretKeySpec(new byte[32], "AES");
-		byte[] iv = new byte[12];
-		Cipher cipher = null;
+
 		byte[] plain = new byte[255];
-		try {
-			cipher = Cipher.getInstance("AES/GCM/NoPadding");
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		try {
-			cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(128, iv));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		byte[] enc = null;
-		try {
-			enc = cipher.doFinal(plain);
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		try {
-			cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(128, iv));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		byte[] dec = null;
-		try {
-			dec = cipher.doFinal(enc);
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		byte[] iv = new byte[16];
+		SecretKey key = AESUtil.generateRandomKey();
+		byte[] enc = AESUtil.encrypt(plain, key, iv);
+		byte[] dec = AESUtil.decrypt(enc, key, iv);
+
 		assertArrayEquals(plain, dec);
 	}
 
 	@Test
 	void testEncryptionDecryptionBlockBiggerKey() {
-		SecretKeySpec key;
-		key = new SecretKeySpec(new byte[32], "AES");
-		byte[] iv = new byte[12];
-		Cipher cipher = null;
+
 		byte[] plain = new byte[257];
-		try {
-			cipher = Cipher.getInstance("AES/GCM/NoPadding");
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		try {
-			cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(128, iv));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		byte[] enc = null;
-		try {
-			enc = cipher.doFinal(plain);
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		try {
-			cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(128, iv));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		byte[] dec = null;
-		try {
-			dec = cipher.doFinal(enc);
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		byte[] iv = new byte[16];
+		SecretKey key = AESUtil.generateRandomKey();
+		byte[] enc = AESUtil.encrypt(plain, key, iv);
+		byte[] dec = AESUtil.decrypt(enc, key, iv);
+
 		assertArrayEquals(plain, dec);
 	}
 
 	@Test
 	void testEncryptionDecryptionBlockBiggerBiggerKey() {
-		SecretKeySpec key;
-		key = new SecretKeySpec(new byte[32], "AES");
-		byte[] iv = new byte[12];
-		Cipher cipher = null;
+
 		byte[] plain = new byte[2000000];
-		try {
-			cipher = Cipher.getInstance("AES/GCM/NoPadding");
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		try {
-			cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(128, iv));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		byte[] enc = null;
-		try {
-			enc = cipher.doFinal(plain);
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		try {
-			cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(128, iv));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-		byte[] dec = null;
-		try {
-			dec = cipher.doFinal(enc);
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		byte[] iv = new byte[16];
+		SecretKey key = AESUtil.generateRandomKey();
+		byte[] enc = AESUtil.encrypt(plain, key, iv);
+		byte[] dec = AESUtil.decrypt(enc, key, iv);
+
 		assertArrayEquals(plain, dec);
 	}
 }
