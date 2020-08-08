@@ -94,8 +94,27 @@ class AESUtilTest {
 		byte[] enc = AESUtil.encrypt(plain, key, iv);
 		byte[] dec = AESUtil.decrypt(enc, key, iv);
 		assertArrayEquals(plain, dec);
+	}	
+	@Test
+	void testEncryptionDecryptionEasyIVinENC() {
+		byte[] plain = new byte[] { 1, 2, 3, 4 };
+		byte[] iv = new byte[16];
+		SecretKey key = AESUtil.generateRandomKey();
+		byte[] enc = AESUtil.addSaltAndIV(AESUtil.encrypt(plain, key, iv),null,iv);
+		byte[] dec = AESUtil.decryptAssumingOnlyIVPrefix(enc, key);
+		assertArrayEquals(plain, dec);
 	}
-
+	@Test
+	void testEncryptionDecryptionEasyIVandSaltInENC() {
+		String password="Passwort123";
+		byte[] plain = new byte[] { 1, 2, 3, 4 };
+		byte[] iv = new byte[16];
+		byte[] salt=new byte[8];
+		SecretKey key = AESUtil.generateKeyFromPassword(password, salt);
+		byte[] enc = AESUtil.addSaltAndIV(AESUtil.encrypt(plain, key, iv),salt,iv);
+		byte[] dec = AESUtil.decryptAssumingSaltAndIVPrefix(enc, password);
+		assertArrayEquals(plain, dec);
+	}
 	@Test
 	void testEncryptionDecryptionBlockSmallerKey() {
 
