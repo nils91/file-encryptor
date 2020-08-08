@@ -35,6 +35,7 @@ import de.dralle.util.Base64Util;
  *
  */
 public class FileEncryptorCLIApp {
+	public final static String VERSION="0.0.1";
 	private boolean verbose;
 
 	public void run(String[] args) {
@@ -58,7 +59,14 @@ public class FileEncryptorCLIApp {
 			showHelp(options);
 		} else if (cmd.hasOption("e")) {
 			encrypt(cmd);
+		} else if(cmd.hasOption("v")) {
+			showVersion();
 		}
+	}
+
+	private void showVersion() {
+		System.out.println(String.format("Version %s running on Java %s", VERSION,System.getProperty("java.version")));
+		
 	}
 
 	private void encrypt(CommandLine cmd) {
