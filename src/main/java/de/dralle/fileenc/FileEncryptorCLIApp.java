@@ -302,11 +302,59 @@ public class FileEncryptorCLIApp {
 		// Encrypt
 		SecretKey key = null;
 		if (cmd.hasOption("k")) {
+			byte[] keyBytes = null;
 			if (verbose) {
 				System.out.println("Key provided with option -k");
 			}
-			String keyInBase64 = cmd.getOptionValue("k");
-			byte[] keyBytes = Base64Util.decodeString(keyInBase64);
+			String keyValue = cmd.getOptionValue("k");
+			File keyFileTrial=new File(keyValue);
+			if(keyFileTrial.exists()) {
+				if (verbose) {
+					System.out.println("Provided key is a file");
+				}
+				// Read file bytes
+				InputStream keyin = null;
+				try {
+					keyin = new FileInputStream(keyFileTrial);
+				} catch (FileNotFoundException e) {
+					System.out.println("Error while opening key file");
+					if (verbose) {
+						e.printStackTrace();
+					}
+					System.exit(1);
+				}
+				BufferedInputStream keybin = new BufferedInputStream(keyin);
+				List<Byte> allKeyBytes = new ArrayList<Byte>();
+				try {
+					while (keybin.available() > 0) {
+						int nextByte = keybin.read();
+						allKeyBytes.add(Byte.valueOf((byte) nextByte));
+					}
+				} catch (IOException e) {
+					System.out.println("Error while reading key file");
+					if (verbose) {
+						e.printStackTrace();
+					}
+					System.exit(1);
+				}
+				keyBytes = new byte[allKeyBytes.size()];
+				for (int i = 0; i < keyBytes.length; i++) {
+					keyBytes[i] = allKeyBytes.get(i);
+				}
+				if (verbose) {
+					System.out.println(keyBytes.length + " Bytes read");
+				}
+				try {
+					keybin.close();
+				} catch (IOException e) {
+					System.out.println("Error while closing key file");
+					if (verbose) {
+						e.printStackTrace();
+					}
+				}
+			}else {
+				keyBytes=Base64Util.decodeString(keyValue);
+			}			
 			key = AESUtil.generateKeyFromByteArray(keyBytes);
 		} else {
 
