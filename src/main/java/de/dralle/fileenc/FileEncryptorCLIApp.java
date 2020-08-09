@@ -35,7 +35,7 @@ import de.dralle.util.Base64Util;
  *
  */
 public class FileEncryptorCLIApp {
-	public final static String VERSION="0.0.1";
+	public final static String VERSION = "0.0.1";
 	private boolean verbose;
 
 	public void run(String[] args) {
@@ -59,124 +59,138 @@ public class FileEncryptorCLIApp {
 			showHelp(options);
 		} else if (cmd.hasOption("e")) {
 			encrypt(cmd);
-		} else if(cmd.hasOption("v")) {
+		} else if (cmd.hasOption("v")) {
 			showVersion();
 		}
 	}
 
 	private void showVersion() {
-		System.out.println(String.format("Version %s running on Java %s", VERSION,System.getProperty("java.version")));
-		
+		System.out.println(String.format("Version %s running on Java %s", VERSION, System.getProperty("java.version")));
+
 	}
 
 	private void encrypt(CommandLine cmd) {
-		if(verbose) {
+		if (verbose) {
 			System.out.println("Encryption mode");
 		}
-		String inputFilePath=null;
-		File inputFile=null;
-		String outputFilePath=null;
-		File outputFile=null;
-		if(cmd.hasOption("i")) {
-			inputFilePath=cmd.getOptionValue("i");
-			if(verbose) {
-				System.out.println("Specified input file: "+inputFilePath);
+		String inputFilePath = null;
+		File inputFile = null;
+		String outputFilePath = null;
+		File outputFile = null;
+		if (cmd.hasOption("i")) {
+			inputFilePath = cmd.getOptionValue("i");
+			if (verbose) {
+				System.out.println("Specified input file: " + inputFilePath);
 			}
 			File f = new File(inputFilePath);
-			if(!f.exists()) {
-					System.out.println("Input file does not exist");
+			if (!f.exists()) {
+				System.out.println("Input file does not exist");
 				System.exit(1);
 			}
-			if(!f.canRead()) {
-					System.out.println("Input file can not be read");
+			if (!f.canRead()) {
+				System.out.println("Input file can not be read");
 				System.exit(1);
 			}
-			inputFile=f;
-		}else {
+			inputFile = f;
+		} else {
 			System.out.println("No input file specified");
 		}
-		if(cmd.hasOption("o")) {
-			outputFilePath=cmd.getOptionValue("o");
-			if(verbose) {
-				System.out.println("Specified output file: "+outputFilePath);
+		if (cmd.hasOption("o")) {
+			outputFilePath = cmd.getOptionValue("o");
+			if (verbose) {
+				System.out.println("Specified output file: " + outputFilePath);
 			}
 			File f = new File(outputFilePath);
-			
-			outputFile=f;
-		}else {
-			if(verbose) {
+
+			outputFile = f;
+		} else {
+			if (verbose) {
 				System.out.println("No output file specified");
 			}
-			outputFilePath=inputFile.getAbsolutePath()+".enc";
-			if(verbose) {
-				System.out.println("Output file set to: "+outputFilePath);
+			outputFilePath = inputFile.getAbsolutePath() + ".enc";
+			if (verbose) {
+				System.out.println("Output file set to: " + outputFilePath);
 			}
 			File f = new File(outputFilePath);
-			outputFile=f;
+			outputFile = f;
 		}
-		//Read file bytes
+		// Read file bytes
 		InputStream in = null;
 		try {
 			in = new FileInputStream(inputFile);
 		} catch (FileNotFoundException e) {
 			System.out.println("Error while opening input file");
-			if(verbose) {
+			if (verbose) {
 				e.printStackTrace();
 			}
 			System.exit(1);
 		}
-		BufferedInputStream bin=new BufferedInputStream(in);
-		List<Byte> allBytes=new ArrayList<Byte>();
+		BufferedInputStream bin = new BufferedInputStream(in);
+		List<Byte> allBytes = new ArrayList<Byte>();
 		byte[] completeFile = null;
 		try {
-			while(bin.available()>0) {
-				int nextByte=bin.read();
+			while (bin.available() > 0) {
+				int nextByte = bin.read();
 				allBytes.add(Byte.valueOf((byte) nextByte));
 			}
 		} catch (IOException e) {
 			System.out.println("Error while reading input file");
-			if(verbose) {
+			if (verbose) {
 				e.printStackTrace();
 			}
 			System.exit(1);
 		}
-		completeFile=new byte[allBytes.size()];
+		completeFile = new byte[allBytes.size()];
 		for (int i = 0; i < completeFile.length; i++) {
-			completeFile[i]=allBytes.get(i);
+			completeFile[i] = allBytes.get(i);
 		}
-		if(verbose) {
-			System.out.println(completeFile.length+" Bytes read");
+		if (verbose) {
+			System.out.println(completeFile.length + " Bytes read");
 		}
 		try {
 			bin.close();
 		} catch (IOException e) {
 			System.out.println("Error while closing input file");
-			if(verbose) {
+			if (verbose) {
 				e.printStackTrace();
 			}
 		}
-		//Encrypt
-		SecretKey key = AESUtil.generateRandomKey();
-		byte[] iv=new byte[16];
-		byte[] completeFileEncrypted=AESUtil.encrypt(completeFile, key, iv);
+		// Encrypt
+		SecretKey key = null;
+		if (cmd.hasOption("k")) {
+			if (verbose) {
+				System.out.println("Key provided with option -k");
+			}
+			String keyInBase64 = cmd.getOptionValue("k");
+			byte[] keyBytes = Base64Util.decodeString(keyInBase64);
+			key = AESUtil.generateKeyFromByteArray(keyBytes);
+		} else {
+
+			key = AESUtil.generateRandomKey();
+			if (verbose) {
+				System.out.println("Using random key: " + Base64Util.encodeBytes2Str(key.getEncoded()));
+			}
+		}
+		byte[] iv = new byte[16];
+		byte[] completeFileEncrypted = AESUtil.encrypt(completeFile, key, iv);
 		byte[] completeFileEncryptedWithIVPrefix = AESUtil.addSaltAndIV(completeFileEncrypted, null, iv);
-		//Write
+		// Write
 		OutputStream out = null;
 		try {
 			out = new FileOutputStream(outputFile);
 		} catch (FileNotFoundException e) {
 			System.out.println("Error while opening output file");
-			if(verbose) {
+			if (verbose) {
 				e.printStackTrace();
 			}
 			System.exit(1);
 		}
-		BufferedOutputStream bout=new BufferedOutputStream(out);
+		BufferedOutputStream bout = new BufferedOutputStream(out);
 		try {
 			bout.write(completeFileEncryptedWithIVPrefix);
 		} catch (IOException e) {
 			System.out.println("Error while writing output file");
-			if(verbose) {
+			if (verbose) {
 				e.printStackTrace();
 			}
 			System.exit(1);
@@ -185,14 +199,14 @@ public class FileEncryptorCLIApp {
 			bout.close();
 		} catch (IOException e) {
 			System.out.println("Error while closing output file");
-			if(verbose) {
+			if (verbose) {
 				e.printStackTrace();
 			}
 		}
-		if(verbose) {
-			System.out.println(completeFileEncryptedWithIVPrefix.length+" Bytes written");
+		if (verbose) {
+			System.out.println(completeFileEncryptedWithIVPrefix.length + " Bytes written");
 		}
-		if(cmd.hasOption("w")) {
+		if (cmd.hasOption("w")) {
 			System.out.println(Base64Util.encodeBytes2Str(key.getEncoded()));
 		}
 
@@ -221,20 +235,23 @@ public class FileEncryptorCLIApp {
 	private Options prepareOptions() {
 		Options options = new Options();
 		options.addOption("e", "encrypt", false, "This flag sets the application to encryption mode");
-		//options.addOption("d", "decrypt", false, "This flag sets the application to decryption mode");
+		// options.addOption("d", "decrypt", false, "This flag sets the application to
+		// decryption mode");
 		options.addOption("i", "in", true, "Input file");
 		options.addOption("o", "out", true,
 				"Output file name. If this parameter is not given, the output filename in encryption mode is just the input filename + '.enc' or '.dec' in decryption mode.");
-		//options.addOption("r", "remove", false, "Remove the input file after the operation is complete");
+		// options.addOption("r", "remove", false, "Remove the input file after the
+		// operation is complete");
 		options.addOption("t", "verbose", false, "Switch on verbode mode");
-		//options.addOption("c", "verify", false, "Verify the operation");
-		//options.addOption("p", "password", true, "Encrypt/Decrypt using a password");
-		//options.addOption("k", "key", true, "Encrypt/Decrypt using a key. Must be encoded in Base64");
+		// options.addOption("c", "verify", false, "Verify the operation");
+		// options.addOption("p", "password", true, "Encrypt/Decrypt using a password");
+		options.addOption("k", "key", true, "Encrypt/Decrypt using a key. Must be encoded in Base64");
 		options.addOption("w", "writekey", false, "Write the key to the console once operation is complete");
 		options.addOption("h", "help", false, "Show usage instructions");
 		options.addOption("v", "version", false, "Show version information");
-		//options.addOption("g", "gui", false, "Show GUI");
-		//options.addOption("b", "blocks", true, "Encrypt the file in block instead of as a whole");
+		// options.addOption("g", "gui", false, "Show GUI");
+		// options.addOption("b", "blocks", true, "Encrypt the file in block instead of
+		// as a whole");
 		return options;
 	}
 
