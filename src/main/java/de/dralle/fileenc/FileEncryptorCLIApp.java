@@ -119,7 +119,19 @@ public class FileEncryptorCLIApp {
 			File f = new File(outputFilePath);
 			outputFile = f;
 		}
-
+		// Read key
+				SecretKey key = null;
+				if (cmd.hasOption("k")) {
+					if (verbose) {
+						System.out.println("Key provided with option -k");
+					}
+					String keyInBase64 = cmd.getOptionValue("k");
+					byte[] keyBytes = Base64Util.decodeString(keyInBase64);
+					key = AESUtil.generateKeyFromByteArray(keyBytes);
+				} else {
+System.out.println("No key provided");
+System.exit(1);
+				}
 	}
 
 	private void encrypt(CommandLine cmd) {
