@@ -39,9 +39,10 @@ import de.dralle.util.Base64Util;
 public class FileEncryptorCLIApp {
 	public final static String VERSION = "0.0.2";
 	private boolean verbose;
-	private PrintStream out;
+	private PrintStream stdout;
+
 	public FileEncryptorCLIApp() {
-		out=System.out;
+		stdout = System.out;
 	}
 
 	public void run(String[] args) {
@@ -52,14 +53,14 @@ public class FileEncryptorCLIApp {
 		}
 		if (verbose) {
 			try {
-				System.out.print(
+				stdout.print(
 						FileEncryptorCLIApp.class.getProtectionDomain().getCodeSource().getLocation().getFile() + " ");
 			} catch (Exception e) {
 			}
 			for (int i = 0; i < args.length; i++) {
-				System.out.print(args[i] + " ");
+				stdout.print(args[i] + " ");
 			}
-			System.out.println();
+			stdout.println();
 		}
 		if (cmd.hasOption("h")) {
 			showHelp(options);
@@ -70,19 +71,19 @@ public class FileEncryptorCLIApp {
 		} else if (cmd.hasOption("v")) {
 			showVersion();
 		} else {
-			System.out.println("Use option '-h' to show usage help");
+			stdout.println("Use option '-h' to show usage help");
 		}
 
 	}
 
 	private void showVersion() {
-		System.out.println(String.format("Version %s running on Java %s", VERSION, System.getProperty("java.version")));
+		stdout.println(String.format("Version %s running on Java %s", VERSION, System.getProperty("java.version")));
 
 	}
 
 	private void decrypt(CommandLine cmd) {
 		if (verbose) {
-			System.out.println("Decryption mode");
+			stdout.println("Decryption mode");
 		}
 		String inputFilePath = null;
 		File inputFile = null;
@@ -91,36 +92,36 @@ public class FileEncryptorCLIApp {
 		if (cmd.hasOption("i")) {
 			inputFilePath = cmd.getOptionValue("i");
 			if (verbose) {
-				System.out.println("Specified input file: " + inputFilePath);
+				stdout.println("Specified input file: " + inputFilePath);
 			}
 			File f = new File(inputFilePath);
 			if (!f.exists()) {
-				System.out.println("Input file does not exist");
+				stdout.println("Input file does not exist");
 				System.exit(1);
 			}
 			if (!f.canRead()) {
-				System.out.println("Input file can not be read");
+				stdout.println("Input file can not be read");
 				System.exit(1);
 			}
 			inputFile = f;
 		} else {
-			System.out.println("No input file specified");
+			stdout.println("No input file specified");
 		}
 		if (cmd.hasOption("o")) {
 			outputFilePath = cmd.getOptionValue("o");
 			if (verbose) {
-				System.out.println("Specified output file: " + outputFilePath);
+				stdout.println("Specified output file: " + outputFilePath);
 			}
 			File f = new File(outputFilePath);
 
 			outputFile = f;
 		} else {
 			if (verbose) {
-				System.out.println("No output file specified");
+				stdout.println("No output file specified");
 			}
 			outputFilePath = inputFile.getAbsolutePath() + ".dec";
 			if (verbose) {
-				System.out.println("Output file set to: " + outputFilePath);
+				stdout.println("Output file set to: " + outputFilePath);
 			}
 			File f = new File(outputFilePath);
 			outputFile = f;
@@ -130,20 +131,20 @@ public class FileEncryptorCLIApp {
 		if (cmd.hasOption("k")) {
 			byte[] keyBytes = null;
 			if (verbose) {
-				System.out.println("Key provided with option -k");
+				stdout.println("Key provided with option -k");
 			}
 			String keyValue = cmd.getOptionValue("k");
-			File keyFileTrial=new File(keyValue);
-			if(keyFileTrial.exists()) {
+			File keyFileTrial = new File(keyValue);
+			if (keyFileTrial.exists()) {
 				if (verbose) {
-					System.out.println("Provided key is a file");
+					stdout.println("Provided key is a file");
 				}
 				// Read file bytes
 				InputStream keyin = null;
 				try {
 					keyin = new FileInputStream(keyFileTrial);
 				} catch (FileNotFoundException e) {
-					System.out.println("Error while opening key file");
+					stdout.println("Error while opening key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
@@ -157,7 +158,7 @@ public class FileEncryptorCLIApp {
 						allKeyBytes.add(Byte.valueOf((byte) nextByte));
 					}
 				} catch (IOException e) {
-					System.out.println("Error while reading key file");
+					stdout.println("Error while reading key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
@@ -168,22 +169,22 @@ public class FileEncryptorCLIApp {
 					keyBytes[i] = allKeyBytes.get(i);
 				}
 				if (verbose) {
-					System.out.println(keyBytes.length + " Bytes read from key file");
+					stdout.println(keyBytes.length + " Bytes read from key file");
 				}
 				try {
 					keybin.close();
 				} catch (IOException e) {
-					System.out.println("Error while closing key file");
+					stdout.println("Error while closing key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
 				}
-			}else {
-				keyBytes=Base64Util.decodeString(keyValue);
-			}			
+			} else {
+				keyBytes = Base64Util.decodeString(keyValue);
+			}
 			key = AESUtil.generateKeyFromByteArray(keyBytes);
 		} else {
-			System.out.println("No key provided");
+			stdout.println("No key provided");
 			System.exit(1);
 		}
 		// Read input file bytes
@@ -191,7 +192,7 @@ public class FileEncryptorCLIApp {
 		try {
 			in = new FileInputStream(inputFile);
 		} catch (FileNotFoundException e) {
-			System.out.println("Error while opening input file");
+			stdout.println("Error while opening input file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -206,7 +207,7 @@ public class FileEncryptorCLIApp {
 				allBytes.add(Byte.valueOf((byte) nextByte));
 			}
 		} catch (IOException e) {
-			System.out.println("Error while reading input file");
+			stdout.println("Error while reading input file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -217,12 +218,12 @@ public class FileEncryptorCLIApp {
 			completeFile[i] = allBytes.get(i);
 		}
 		if (verbose) {
-			System.out.println(completeFile.length + " Bytes read");
+			stdout.println(completeFile.length + " Bytes read");
 		}
 		try {
 			bin.close();
 		} catch (IOException e) {
-			System.out.println("Error while closing input file");
+			stdout.println("Error while closing input file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -234,7 +235,7 @@ public class FileEncryptorCLIApp {
 		try {
 			out = new FileOutputStream(outputFile);
 		} catch (FileNotFoundException e) {
-			System.out.println("Error while opening output file");
+			this.stdout.println("Error while opening output file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -244,7 +245,7 @@ public class FileEncryptorCLIApp {
 		try {
 			bout.write(completeFileDecrypted);
 		} catch (IOException e) {
-			System.out.println("Error while writing output file");
+			this.stdout.println("Error while writing output file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -253,22 +254,22 @@ public class FileEncryptorCLIApp {
 		try {
 			bout.close();
 		} catch (IOException e) {
-			System.out.println("Error while closing output file");
+			this.stdout.println("Error while closing output file");
 			if (verbose) {
 				e.printStackTrace();
 			}
 		}
 		if (verbose) {
-			System.out.println(completeFileDecrypted.length + " Bytes written");
+			this.stdout.println(completeFileDecrypted.length + " Bytes written");
 		}
 		if (cmd.hasOption("w")) {
-			System.out.println(Base64Util.encodeBytes2Str(key.getEncoded()));
+			this.stdout.println(Base64Util.encodeBytes2Str(key.getEncoded()));
 		}
 	}
 
 	private void encrypt(CommandLine cmd) {
 		if (verbose) {
-			System.out.println("Encryption mode");
+			stdout.println("Encryption mode");
 		}
 		String inputFilePath = null;
 		File inputFile = null;
@@ -277,36 +278,36 @@ public class FileEncryptorCLIApp {
 		if (cmd.hasOption("i")) {
 			inputFilePath = cmd.getOptionValue("i");
 			if (verbose) {
-				System.out.println("Specified input file: " + inputFilePath);
+				stdout.println("Specified input file: " + inputFilePath);
 			}
 			File f = new File(inputFilePath);
 			if (!f.exists()) {
-				System.out.println("Input file does not exist");
+				stdout.println("Input file does not exist");
 				System.exit(1);
 			}
 			if (!f.canRead()) {
-				System.out.println("Input file can not be read");
+				stdout.println("Input file can not be read");
 				System.exit(1);
 			}
 			inputFile = f;
 		} else {
-			System.out.println("No input file specified");
+			stdout.println("No input file specified");
 		}
 		if (cmd.hasOption("o")) {
 			outputFilePath = cmd.getOptionValue("o");
 			if (verbose) {
-				System.out.println("Specified output file: " + outputFilePath);
+				stdout.println("Specified output file: " + outputFilePath);
 			}
 			File f = new File(outputFilePath);
 
 			outputFile = f;
 		} else {
 			if (verbose) {
-				System.out.println("No output file specified");
+				stdout.println("No output file specified");
 			}
 			outputFilePath = inputFile.getAbsolutePath() + ".enc";
 			if (verbose) {
-				System.out.println("Output file set to: " + outputFilePath);
+				stdout.println("Output file set to: " + outputFilePath);
 			}
 			File f = new File(outputFilePath);
 			outputFile = f;
@@ -316,7 +317,7 @@ public class FileEncryptorCLIApp {
 		try {
 			in = new FileInputStream(inputFile);
 		} catch (FileNotFoundException e) {
-			System.out.println("Error while opening input file");
+			stdout.println("Error while opening input file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -331,7 +332,7 @@ public class FileEncryptorCLIApp {
 				allBytes.add(Byte.valueOf((byte) nextByte));
 			}
 		} catch (IOException e) {
-			System.out.println("Error while reading input file");
+			stdout.println("Error while reading input file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -342,12 +343,12 @@ public class FileEncryptorCLIApp {
 			completeFile[i] = allBytes.get(i);
 		}
 		if (verbose) {
-			System.out.println(completeFile.length + " Bytes read");
+			stdout.println(completeFile.length + " Bytes read");
 		}
 		try {
 			bin.close();
 		} catch (IOException e) {
-			System.out.println("Error while closing input file");
+			stdout.println("Error while closing input file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -357,20 +358,20 @@ public class FileEncryptorCLIApp {
 		if (cmd.hasOption("k")) {
 			byte[] keyBytes = null;
 			if (verbose) {
-				System.out.println("Key provided with option -k");
+				stdout.println("Key provided with option -k");
 			}
 			String keyValue = cmd.getOptionValue("k");
-			File keyFileTrial=new File(keyValue);
-			if(keyFileTrial.exists()) {
+			File keyFileTrial = new File(keyValue);
+			if (keyFileTrial.exists()) {
 				if (verbose) {
-					System.out.println("Provided key is a file");
+					stdout.println("Provided key is a file");
 				}
 				// Read file bytes
 				InputStream keyin = null;
 				try {
 					keyin = new FileInputStream(keyFileTrial);
 				} catch (FileNotFoundException e) {
-					System.out.println("Error while opening key file");
+					stdout.println("Error while opening key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
@@ -384,7 +385,7 @@ public class FileEncryptorCLIApp {
 						allKeyBytes.add(Byte.valueOf((byte) nextByte));
 					}
 				} catch (IOException e) {
-					System.out.println("Error while reading key file");
+					stdout.println("Error while reading key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
@@ -395,25 +396,25 @@ public class FileEncryptorCLIApp {
 					keyBytes[i] = allKeyBytes.get(i);
 				}
 				if (verbose) {
-					System.out.println(keyBytes.length + " Bytes read from key file");
+					stdout.println(keyBytes.length + " Bytes read from key file");
 				}
 				try {
 					keybin.close();
 				} catch (IOException e) {
-					System.out.println("Error while closing key file");
+					stdout.println("Error while closing key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
 				}
-			}else {
-				keyBytes=Base64Util.decodeString(keyValue);
-			}			
+			} else {
+				keyBytes = Base64Util.decodeString(keyValue);
+			}
 			key = AESUtil.generateKeyFromByteArray(keyBytes);
 		} else {
 
 			key = AESUtil.generateRandomKey();
 			if (verbose) {
-				System.out.println("Using random key: " + Base64Util.encodeBytes2Str(key.getEncoded()));
+				stdout.println("Using random key: " + Base64Util.encodeBytes2Str(key.getEncoded()));
 			}
 		}
 		byte[] iv = new byte[16];
@@ -424,7 +425,7 @@ public class FileEncryptorCLIApp {
 		try {
 			out = new FileOutputStream(outputFile);
 		} catch (FileNotFoundException e) {
-			System.out.println("Error while opening output file");
+			this.stdout.println("Error while opening output file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -434,7 +435,7 @@ public class FileEncryptorCLIApp {
 		try {
 			bout.write(completeFileEncryptedWithIVPrefix);
 		} catch (IOException e) {
-			System.out.println("Error while writing output file");
+			this.stdout.println("Error while writing output file");
 			if (verbose) {
 				e.printStackTrace();
 			}
@@ -443,46 +444,46 @@ public class FileEncryptorCLIApp {
 		try {
 			bout.close();
 		} catch (IOException e) {
-			System.out.println("Error while closing output file");
+			this.stdout.println("Error while closing output file");
 			if (verbose) {
 				e.printStackTrace();
 			}
 		}
 		if (verbose) {
-			System.out.println(completeFileEncryptedWithIVPrefix.length + " Bytes written");
+			this.stdout.println(completeFileEncryptedWithIVPrefix.length + " Bytes written");
 		}
 		if (cmd.hasOption("w")) {
 			String writeKeyFile = cmd.getOptionValue("w");
 			File tgtKeyFile = null;
 			if (writeKeyFile == null) {
 				if (verbose) {
-					System.out.println("Parameter '-w' has no argument. Writing key to console.");
+					this.stdout.println("Parameter '-w' has no argument. Writing key to console.");
 				}
-				System.out.println(Base64Util.encodeBytes2Str(key.getEncoded()));
+				this.stdout.println(Base64Util.encodeBytes2Str(key.getEncoded()));
 			} else if (writeKeyFile.equalsIgnoreCase("yes")) {
 				tgtKeyFile = new File(outputFile.getAbsoluteFile() + ".key");
 				if (verbose) {
-					System.out.println(String.format(
+					this.stdout.println(String.format(
 							"Parameter '-w' has argument '%s'. Writing key to filename generated from output filename.",
 							writeKeyFile));
 				}
 			} else {
 				tgtKeyFile = new File(writeKeyFile);
 				if (verbose) {
-					System.out.println(String.format("Parameter '-w' has argument '%s'. Trying to write key there.",
+					this.stdout.println(String.format("Parameter '-w' has argument '%s'. Trying to write key there.",
 							writeKeyFile));
 				}
 			}
 			if (tgtKeyFile != null) {
 				if (verbose) {
-					System.out.println(String.format("Writing key to %s.", tgtKeyFile.getAbsolutePath()));
+					this.stdout.println(String.format("Writing key to %s.", tgtKeyFile.getAbsolutePath()));
 				}
 				// Write key
 				OutputStream keyout = null;
 				try {
 					keyout = new FileOutputStream(tgtKeyFile);
 				} catch (FileNotFoundException e) {
-					System.out.println("Error while opening key file");
+					this.stdout.println("Error while opening key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
@@ -492,7 +493,7 @@ public class FileEncryptorCLIApp {
 				try {
 					keybout.write(key.getEncoded());
 				} catch (IOException e) {
-					System.out.println("Error while writing key file");
+					this.stdout.println("Error while writing key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
@@ -501,13 +502,13 @@ public class FileEncryptorCLIApp {
 				try {
 					keybout.close();
 				} catch (IOException e) {
-					System.out.println("Error while closing key file");
+					this.stdout.println("Error while closing key file");
 					if (verbose) {
 						e.printStackTrace();
 					}
 				}
 				if (verbose) {
-					System.out.println("Key written to " + tgtKeyFile.getAbsolutePath());
+					this.stdout.println("Key written to " + tgtKeyFile.getAbsolutePath());
 				}
 			}
 		}
@@ -523,7 +524,7 @@ public class FileEncryptorCLIApp {
 			if (verbose) {
 				e.printStackTrace();
 			}
-			System.out.println("Arguments could not be parser. Use '-h' or '--help' to show correct usage.");
+			stdout.println("Arguments could not be parser. Use '-h' or '--help' to show correct usage.");
 			System.exit(1);
 		}
 		return cmd;
@@ -549,7 +550,8 @@ public class FileEncryptorCLIApp {
 		options.addOption("t", "verbose", false, "Switch on verbode mode");
 		// options.addOption("c", "verify", false, "Verify the operation");
 		// options.addOption("p", "password", true, "Encrypt/Decrypt using a password");
-		Option optReadKey=new Option("k", "key", true, "Encrypt/Decrypt using a key. Must be encoded in Base64 when read from console.");
+		Option optReadKey = new Option("k", "key", true,
+				"Encrypt/Decrypt using a key. Must be encoded in Base64 when read from console.");
 		options.addOption(optReadKey);
 
 		Option optWritekey = new Option("w", "writekey", true,
