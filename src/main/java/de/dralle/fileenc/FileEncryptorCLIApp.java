@@ -446,10 +446,11 @@ public class FileEncryptorCLIApp {
 		// options.addOption("c", "verify", false, "Verify the operation");
 		// options.addOption("p", "password", true, "Encrypt/Decrypt using a password");
 		options.addOption("k", "key",true, "Encrypt/Decrypt using a key. Must be encoded in Base64");
-		options.addOption("w", "writekey", false, "Write the key to the console once operation is complete");
-	    Option optWritekey = new Option("w", "writekey", true, "Write the key to the console once operation is complete");
+		
+	    Option optWritekey = new Option("w", "writekey", true, "Write the key to the console (or a file) once operation is complete");
 	    optWritekey.setOptionalArg(true);
 	    options.addOption(optWritekey);
+	    
 		options.addOption("h", "help", false, "Show usage instructions");
 		options.addOption("v", "version", false, "Show version information");
 		// options.addOption("g", "gui", false, "Show GUI");
