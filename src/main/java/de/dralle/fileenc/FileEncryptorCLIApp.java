@@ -112,7 +112,7 @@ public class FileEncryptorCLIApp {
 			if (verbose) {
 				System.out.println("No output file specified");
 			}
-			outputFilePath = inputFile.getAbsolutePath() + ".enc";
+			outputFilePath = inputFile.getAbsolutePath() + ".dec";
 			if (verbose) {
 				System.out.println("Output file set to: " + outputFilePath);
 			}
@@ -120,18 +120,96 @@ public class FileEncryptorCLIApp {
 			outputFile = f;
 		}
 		// Read key
-				SecretKey key = null;
-				if (cmd.hasOption("k")) {
-					if (verbose) {
-						System.out.println("Key provided with option -k");
-					}
-					String keyInBase64 = cmd.getOptionValue("k");
-					byte[] keyBytes = Base64Util.decodeString(keyInBase64);
-					key = AESUtil.generateKeyFromByteArray(keyBytes);
-				} else {
-System.out.println("No key provided");
-System.exit(1);
-				}
+		SecretKey key = null;
+		if (cmd.hasOption("k")) {
+			if (verbose) {
+				System.out.println("Key provided with option -k");
+			}
+			String keyInBase64 = cmd.getOptionValue("k");
+			byte[] keyBytes = Base64Util.decodeString(keyInBase64);
+			key = AESUtil.generateKeyFromByteArray(keyBytes);
+		} else {
+			System.out.println("No key provided");
+			System.exit(1);
+		}
+		// Read input file bytes
+		InputStream in = null;
+		try {
+			in = new FileInputStream(inputFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("Error while opening input file");
+			if (verbose) {
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
+		BufferedInputStream bin = new BufferedInputStream(in);
+		List<Byte> allBytes = new ArrayList<Byte>();
+		byte[] completeFile = null;
+		try {
+			while (bin.available() > 0) {
+				int nextByte = bin.read();
+				allBytes.add(Byte.valueOf((byte) nextByte));
+			}
+		} catch (IOException e) {
+			System.out.println("Error while reading input file");
+			if (verbose) {
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
+		completeFile = new byte[allBytes.size()];
+		for (int i = 0; i < completeFile.length; i++) {
+			completeFile[i] = allBytes.get(i);
+		}
+		if (verbose) {
+			System.out.println(completeFile.length + " Bytes read");
+		}
+		try {
+			bin.close();
+		} catch (IOException e) {
+			System.out.println("Error while closing input file");
+			if (verbose) {
+				e.printStackTrace();
+			}
+		}
+		// Decrypt
+		byte[] completeFileDecrypted = AESUtil.decryptAssumingOnlyIVPrefix(completeFile, key);
+		// Write
+		OutputStream out = null;
+		try {
+			out = new FileOutputStream(outputFile);
+		} catch (FileNotFoundException e) {
+			System.out.println("Error while opening output file");
+			if (verbose) {
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
+		BufferedOutputStream bout = new BufferedOutputStream(out);
+		try {
+			bout.write(completeFileDecrypted);
+		} catch (IOException e) {
+			System.out.println("Error while writing output file");
+			if (verbose) {
+				e.printStackTrace();
+			}
+			System.exit(1);
+		}
+		try {
+			bout.close();
+		} catch (IOException e) {
+			System.out.println("Error while closing output file");
+			if (verbose) {
+				e.printStackTrace();
+			}
+		}
+		if (verbose) {
+			System.out.println(completeFileDecrypted.length + " Bytes written");
+		}
+		if (cmd.hasOption("w")) {
+			System.out.println(Base64Util.encodeBytes2Str(key.getEncoded()));
+		}
 	}
 
 	private void encrypt(CommandLine cmd) {
