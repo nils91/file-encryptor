@@ -59,9 +59,19 @@ public class FileEncryptorCLIApp {
 			showHelp(options);
 		} else if (cmd.hasOption("e")) {
 			encrypt(cmd);
-		} else if (cmd.hasOption("v")) {
-			showVersion();
-		}
+		} else if (cmd.hasOption("d")) {
+			decrypt(cmd);
+		} else if (cmd.hasOption("v")) {showVersion();
+		}else {
+		System.out.println("Use option '-h' to show usage help");}
+		
+	}
+
+	private void decrypt(CommandLine cmd) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	}
 
 	private void showVersion() {
