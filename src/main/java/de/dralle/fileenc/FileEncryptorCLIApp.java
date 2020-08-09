@@ -36,7 +36,7 @@ import de.dralle.util.Base64Util;
  *
  */
 public class FileEncryptorCLIApp {
-	public final static String VERSION = "0.0.1";
+	public final static String VERSION = "0.0.2";
 	private boolean verbose;
 
 	public void run(String[] args) {
@@ -529,7 +529,7 @@ public class FileEncryptorCLIApp {
 	 */
 	private void showHelp(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("File Encryptor", options);
+		formatter.printHelp("file-encryptor", options);
 	}
 
 	private Options prepareOptions() {
