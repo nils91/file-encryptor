@@ -342,7 +342,7 @@ public class FileEncryptorCLIApp {
 					keyBytes[i] = allKeyBytes.get(i);
 				}
 				if (verbose) {
-					System.out.println(keyBytes.length + " Bytes read");
+					System.out.println(keyBytes.length + " Bytes read from key file");
 				}
 				try {
 					keybin.close();
