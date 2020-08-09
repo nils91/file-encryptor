@@ -61,21 +61,64 @@ public class FileEncryptorCLIApp {
 			encrypt(cmd);
 		} else if (cmd.hasOption("d")) {
 			decrypt(cmd);
-		} else if (cmd.hasOption("v")) {showVersion();
-		}else {
-		System.out.println("Use option '-h' to show usage help");}
-		
-	}
-
-	private void decrypt(CommandLine cmd) {
-		// TODO Auto-generated method stub
-		
-	}
+		} else if (cmd.hasOption("v")) {
+			showVersion();
+		} else {
+			System.out.println("Use option '-h' to show usage help");
+		}
 
 	}
 
 	private void showVersion() {
 		System.out.println(String.format("Version %s running on Java %s", VERSION, System.getProperty("java.version")));
+
+	}
+
+	private void decrypt(CommandLine cmd) {
+		if (verbose) {
+			System.out.println("Decryption mode");
+		}
+		String inputFilePath = null;
+		File inputFile = null;
+		String outputFilePath = null;
+		File outputFile = null;
+		if (cmd.hasOption("i")) {
+			inputFilePath = cmd.getOptionValue("i");
+			if (verbose) {
+				System.out.println("Specified input file: " + inputFilePath);
+			}
+			File f = new File(inputFilePath);
+			if (!f.exists()) {
+				System.out.println("Input file does not exist");
+				System.exit(1);
+			}
+			if (!f.canRead()) {
+				System.out.println("Input file can not be read");
+				System.exit(1);
+			}
+			inputFile = f;
+		} else {
+			System.out.println("No input file specified");
+		}
+		if (cmd.hasOption("o")) {
+			outputFilePath = cmd.getOptionValue("o");
+			if (verbose) {
+				System.out.println("Specified output file: " + outputFilePath);
+			}
+			File f = new File(outputFilePath);
+
+			outputFile = f;
+		} else {
+			if (verbose) {
+				System.out.println("No output file specified");
+			}
+			outputFilePath = inputFile.getAbsolutePath() + ".enc";
+			if (verbose) {
+				System.out.println("Output file set to: " + outputFilePath);
+			}
+			File f = new File(outputFilePath);
+			outputFile = f;
+		}
 
 	}
 
