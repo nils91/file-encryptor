@@ -361,6 +361,9 @@ public class FileEncryptorCLIApp {
 		try {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e) {
+			if(verbose) {
+				e.printStackTrace();
+			}
 			System.out.println("Arguments could not be parser. Use '-h' or '--help' to show correct usage.");
 			System.exit(1);
 		}
@@ -378,8 +381,7 @@ public class FileEncryptorCLIApp {
 	private Options prepareOptions() {
 		Options options = new Options();
 		options.addOption("e", "encrypt", false, "This flag sets the application to encryption mode");
-		// options.addOption("d", "decrypt", false, "This flag sets the application to
-		// decryption mode");
+		 options.addOption("d", "decrypt", false, "This flag sets the application to decryption mode");
 		options.addOption("i", "in", true, "Input file");
 		options.addOption("o", "out", true,
 				"Output file name. If this parameter is not given, the output filename in encryption mode is just the input filename + '.enc' or '.dec' in decryption mode.");
