@@ -351,26 +351,29 @@ public class FileEncryptorCLIApp {
 			System.out.println(completeFileEncryptedWithIVPrefix.length + " Bytes written");
 		}
 		if (cmd.hasOption("w")) {
-			String writeKeyFile=cmd.getOptionValue("w");	
-			File tgtKeyFile=null;
-			if(writeKeyFile==null) {
-				if(verbose) {
+			String writeKeyFile = cmd.getOptionValue("w");
+			File tgtKeyFile = null;
+			if (writeKeyFile == null) {
+				if (verbose) {
 					System.out.println("Parameter '-w' has no argument. Writing key to console.");
 				}
 				System.out.println(Base64Util.encodeBytes2Str(key.getEncoded()));
-			}else if(writeKeyFile.equalsIgnoreCase("yes")) {
-				tgtKeyFile=new File(outputFile.getAbsoluteFile()+".key");
-				if(verbose) {
-					System.out.println(String.format("Parameter '-w' has argument '%s'. Writing key to filename generated from output filename.", writeKeyFile));
+			} else if (writeKeyFile.equalsIgnoreCase("yes")) {
+				tgtKeyFile = new File(outputFile.getAbsoluteFile() + ".key");
+				if (verbose) {
+					System.out.println(String.format(
+							"Parameter '-w' has argument '%s'. Writing key to filename generated from output filename.",
+							writeKeyFile));
 				}
-			}else {
-				tgtKeyFile=new File(writeKeyFile);
-				if(verbose) {
-					System.out.println(String.format("Parameter '-w' has argument '%s'. Trying to write key there.", writeKeyFile));
+			} else {
+				tgtKeyFile = new File(writeKeyFile);
+				if (verbose) {
+					System.out.println(String.format("Parameter '-w' has argument '%s'. Trying to write key there.",
+							writeKeyFile));
 				}
 			}
-			if(tgtKeyFile!=null) {
-				if(verbose) {
+			if (tgtKeyFile != null) {
+				if (verbose) {
 					System.out.println(String.format("Writing key to %s.", tgtKeyFile.getAbsolutePath()));
 				}
 				// Write key
@@ -402,8 +405,8 @@ public class FileEncryptorCLIApp {
 						e.printStackTrace();
 					}
 				}
-				if(verbose) {
-					System.out.println("Key written to "+tgtKeyFile.getAbsolutePath());
+				if (verbose) {
+					System.out.println("Key written to " + tgtKeyFile.getAbsolutePath());
 				}
 			}
 		}
@@ -416,7 +419,7 @@ public class FileEncryptorCLIApp {
 		try {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e) {
-			if(verbose) {
+			if (verbose) {
 				e.printStackTrace();
 			}
 			System.out.println("Arguments could not be parser. Use '-h' or '--help' to show correct usage.");
@@ -445,12 +448,14 @@ public class FileEncryptorCLIApp {
 		options.addOption("t", "verbose", false, "Switch on verbode mode");
 		// options.addOption("c", "verify", false, "Verify the operation");
 		// options.addOption("p", "password", true, "Encrypt/Decrypt using a password");
-		options.addOption("k", "key",true, "Encrypt/Decrypt using a key. Must be encoded in Base64");
-		
-	    Option optWritekey = new Option("w", "writekey", true, "Write the key to the console (or a file) once operation is complete");
-	    optWritekey.setOptionalArg(true);
-	    options.addOption(optWritekey);
-	    
+		Option optReadKey=new Option("k", "key", true, "Encrypt/Decrypt using a key. Must be encoded in Base64 when read from console.");
+		options.addOption(optReadKey);
+
+		Option optWritekey = new Option("w", "writekey", true,
+				"Write the key to the console (or a file) once operation is complete. The argument is optional. If the argument is 'yes', the key will be written to  a filename generated from the output file name. Alternativly a filepath can be provided.");
+		optWritekey.setOptionalArg(true);
+		options.addOption(optWritekey);
+
 		options.addOption("h", "help", false, "Show usage instructions");
 		options.addOption("v", "version", false, "Show version information");
 		// options.addOption("g", "gui", false, "Show GUI");
