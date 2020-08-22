@@ -112,6 +112,9 @@ public class AESUtil {
 	 * @return
 	 */
 	public static byte[] encrypt(byte[] input, SecretKey key, byte[] iv) {
+		if(input==null) {
+			return null;
+		}
 		try {
 			SecureRandom.getInstanceStrong().nextBytes(iv);
 		} catch (NoSuchAlgorithmException e3) {

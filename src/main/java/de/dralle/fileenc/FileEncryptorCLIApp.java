@@ -134,6 +134,9 @@ public class FileEncryptorCLIApp {
 	 * @param content
 	 */
 	private void writeOutputFile(File outputFile, byte[] content) {
+		if(outputFile==null) {
+			throw new NullPointerException();
+		}
 		OutputStream out = null;
 		try {
 			out = new FileOutputStream(outputFile);
@@ -168,6 +171,9 @@ public class FileEncryptorCLIApp {
 	 * @return
 	 */
 	private byte[] readAllBytesFromFile(File file) {
+		if(file==null) {
+			return null;
+		}
 		InputStream in = null;
 		try {
 			in = new FileInputStream(file);

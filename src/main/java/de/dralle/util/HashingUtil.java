@@ -142,7 +142,13 @@ public class HashingUtil {
 		return saltedHashWSaltLen;
 	}
 
-	public  static byte[] concatenateArrays(byte[] arr1, byte[] arr2) {
+	public static byte[] concatenateArrays(byte[] arr1, byte[] arr2) {
+		if(arr1==null) {
+			return arr2;
+		}
+		if(arr2==null) {
+			return arr1;
+		}
 		byte[] newArr = new byte[arr1.length + arr2.length];
 		for (int i = 0; i < newArr.length; i++) {
 			if (i < arr1.length) {
