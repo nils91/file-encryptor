@@ -148,7 +148,13 @@ class FileEncryptorCLIAppTest {
 		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
 		assertTrue(Files.exists(tmp));
 	}
-
+	
+	@Test
+	void testTemporaryTestFileSize() {
+		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
+		File f=new File(tmp.toUri());
+		assertTrue(f.length()>0);
+	}
 	@Test
 	void testTemporaryTestFileNotFolder() {
 		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
