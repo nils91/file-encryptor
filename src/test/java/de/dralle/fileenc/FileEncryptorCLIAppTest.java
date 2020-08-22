@@ -6,6 +6,7 @@ package de.dralle.fileenc;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,13 +61,31 @@ class FileEncryptorCLIAppTest {
 	 */
 	@AfterEach
 	void tearDown() throws Exception {
+		cleanupTmpFolderFile();
+		cleanupOtherExpectedFiles();
+		checkIfAllFilesDeleted();
+	}
+
+	private void cleanupOtherExpectedFiles() throws IOException {
+		keyFile=Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME+".key");
+		encFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME+".enc");
+		decFile=Paths.get(TEMPORARY_FOLDER_NAME,TEMPORARY_FILE_NAME+".enc.dec");
+		Files.deleteIfExists(keyFile);
+		Files.deleteIfExists(encFile);
+		Files.deleteIfExists(decFile);
+		
+	}
+
+	/**
+	 * @throws IOException
+	 */
+	private void cleanupTmpFolderFile() throws IOException {
 		if(tmpFile!=null&&!fileExistedPreTest) { //clean up file
 			Files.delete(tmpFile);
 		}
 		if(tmpFolder!=null&&!folderExistedPreTest) { //clean up folder
 			Files.delete(tmpFolder);
 		}
-		checkIfAllFilesDeleted();
 	}
 
 	private void checkIfAllFilesDeleted() throws Exception {
