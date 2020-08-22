@@ -5,12 +5,16 @@ package de.dralle.fileenc;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
+import java.util.Random;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -28,30 +32,41 @@ class FileEncryptorCLIAppTest {
 	private static Path tmpFolder = null;
 	private static final String TEMPORARY_FILE_NAME = "file";
 	private static Path tmpFile = null;
-	
+
 	private static boolean folderExistedPreTest;
 	private static boolean fileExistedPreTest;
 	private static Path keyFile;
 	private static Path decFile;
 	private static Path encFile;
-	
+
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		tmpFolder=Paths.get(TEMPORARY_FOLDER_NAME);
+		tmpFolder = Paths.get(TEMPORARY_FOLDER_NAME);
 		folderExistedPreTest = Files.exists(tmpFolder);
-		if(!folderExistedPreTest) {
-			tmpFolder=Files.createDirectory(tmpFolder);
+		if (!folderExistedPreTest) {
+			tmpFolder = Files.createDirectory(tmpFolder);
 		}
-		if(Files.exists(tmpFolder)) {
-			tmpFile=Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
+		if (Files.exists(tmpFolder)) {
+			tmpFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
 			fileExistedPreTest = Files.exists(tmpFile);
-			if(!fileExistedPreTest) {
-				tmpFile=Files.createFile(tmpFile);
+			if (!fileExistedPreTest) {
+				tmpFile = Files.createFile(tmpFile);
+				if(Files.exists(tmpFile)) {
+					FileOutputStream tmpFileOut = new FileOutputStream(new File(tmpFile.toUri()));
+					BufferedOutputStream tmpFileBOut = new BufferedOutputStream(tmpFileOut);
+					byte[] fileContents = new byte[128];
+					Random rnd = new Random();
+					rnd.nextBytes(fileContents);
+					tmpFileBOut.write(fileContents);
+					tmpFileBOut.close();
+				}else {
+					throw new Exception("File not created");
+				}
 			}
-		}else {
+		} else {
 			throw new Exception("Folder not created");
 		}
 	}
@@ -63,69 +78,86 @@ class FileEncryptorCLIAppTest {
 	void tearDown() throws Exception {
 		cleanupTmpFolderFile();
 		cleanupOtherExpectedFiles();
-		checkIfAllFilesDeleted();
+		checkIfAllFilesDeletedForCleanup();
 	}
 
 	private void cleanupOtherExpectedFiles() throws IOException {
-		keyFile=Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME+".key");
-		encFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME+".enc");
-		decFile=Paths.get(TEMPORARY_FOLDER_NAME,TEMPORARY_FILE_NAME+".enc.dec");
+		keyFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME + ".key");
+		encFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME + ".enc");
+		decFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME + ".enc.dec");
 		Files.deleteIfExists(keyFile);
 		Files.deleteIfExists(encFile);
 		Files.deleteIfExists(decFile);
-		
+
 	}
 
 	/**
 	 * @throws IOException
 	 */
 	private void cleanupTmpFolderFile() throws IOException {
-		if(tmpFile!=null&&!fileExistedPreTest) { //clean up file
+		if (tmpFile != null && !fileExistedPreTest) { // clean up file
 			Files.delete(tmpFile);
 		}
-		if(tmpFolder!=null&&!folderExistedPreTest) { //clean up folder
+		if (tmpFolder != null && !folderExistedPreTest) { // clean up folder
 			Files.delete(tmpFolder);
 		}
 	}
 
-	private void checkIfAllFilesDeleted() throws Exception {
-		tmpFolder=Paths.get(TEMPORARY_FOLDER_NAME);
-		tmpFile=Paths.get(TEMPORARY_FOLDER_NAME,TEMPORARY_FILE_NAME);
-		keyFile=Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME+".key");
-		encFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME+".enc");
-		decFile=Paths.get(TEMPORARY_FOLDER_NAME,TEMPORARY_FILE_NAME+".enc.dec");
-		if(!folderExistedPreTest) {
-			if(Files.exists(tmpFolder)) {
-				throw new Exception("Cleanup not complete("+tmpFolder+")");
+	private void checkIfAllFilesDeletedForCleanup() throws Exception {
+		tmpFolder = Paths.get(TEMPORARY_FOLDER_NAME);
+		tmpFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
+		keyFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME + ".key");
+		encFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME + ".enc");
+		decFile = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME + ".enc.dec");
+		if (!folderExistedPreTest) {
+			if (Files.exists(tmpFolder)) {
+				throw new Exception("Cleanup not complete(" + tmpFolder + ")");
 			}
-			if(Files.exists(tmpFile)) {
-				throw new Exception("Cleanup not complete("+tmpFile+")");
+			if (Files.exists(tmpFile)) {
+				throw new Exception("Cleanup not complete(" + tmpFile + ")");
 			}
-			if(Files.exists(keyFile)) {
-				throw new Exception("Cleanup not complete("+keyFile+")");
+			if (Files.exists(keyFile)) {
+				throw new Exception("Cleanup not complete(" + keyFile + ")");
 			}
-			if(Files.exists(encFile)) {
-				throw new Exception("Cleanup not complete("+encFile+")");
+			if (Files.exists(encFile)) {
+				throw new Exception("Cleanup not complete(" + encFile + ")");
 			}
-			if(Files.exists(decFile)) {
-				throw new Exception("Cleanup not complete("+decFile+")");
+			if (Files.exists(decFile)) {
+				throw new Exception("Cleanup not complete(" + decFile + ")");
 			}
 		}
 	}
 
 	@Test
 	void testTemporaryTestFolder() {
-		Path tmp=Paths.get(TEMPORARY_FOLDER_NAME);
+		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME);
 		assertTrue(Files.exists(tmp));
-	
-	}
-	@Test
-	void testTemporaryTestFolderIsFolder(
-	) {
-		Path tmp=Paths.get(TEMPORARY_FOLDER_NAME);
-		assertTrue(Files.exists(tmp));
-		assertTrue(Files.isDirectory(tmp));
-	
+
 	}
 
+	@Test
+	void testTemporaryTestFolderIsFolder() {
+		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME);
+		assertTrue(Files.exists(tmp));
+		assertTrue(Files.isDirectory(tmp));
+
+	}
+
+	@Test
+	void testTemporaryTestFile() {
+		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
+		assertTrue(Files.exists(tmp));
+	}
+
+	@Test
+	void testTemporaryTestFileNotFolder() {
+		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
+		assertTrue(Files.exists(tmp));
+		assertFalse(Files.isDirectory(tmp));
+	}
+	
+	@Test
+	void testNoParamNoActionNull() {
+		
+	}
 }
