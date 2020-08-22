@@ -28,8 +28,8 @@ class FileEncryptorCLIAppTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeAll
-	static void setUpBeforeClass() throws Exception {
+	@BeforeEach
+	void setUp() throws Exception {
 		TEMPORARY_FOLDER=Paths.get(TEMPORARY_FOLDER_NAME);
 		folderExistedPreTest = Files.exists(TEMPORARY_FOLDER);
 		if(!folderExistedPreTest) {
@@ -40,25 +40,11 @@ class FileEncryptorCLIAppTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@AfterAll
-	static void tearDownAfterClass() throws Exception {
+	@AfterEach
+	void tearDown() throws Exception {
 		if(TEMPORARY_FOLDER!=null&&!folderExistedPreTest) { //clean up folder
 			Files.delete(TEMPORARY_FOLDER);
 		}
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeEach
-	void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterEach
-	void tearDown() throws Exception {
 	}
 
 	@Test
