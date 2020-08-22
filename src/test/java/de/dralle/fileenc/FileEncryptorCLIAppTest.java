@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import de.dralle.util.testing.ExcpetionInsteadExitSecurityManager;
+import de.dralle.util.testing.ExceptionInsteadExitSecurityManager;
 
 /**
  * @author Nils Dralle
@@ -46,7 +46,7 @@ class FileEncryptorCLIAppTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		System.setSecurityManager(new ExcpetionInsteadExitSecurityManager());
+		System.setSecurityManager(new ExceptionInsteadExitSecurityManager());
 		tmpFolder = Paths.get(TEMPORARY_FOLDER_NAME);
 		folderExistedPreTest = Files.exists(tmpFolder);
 		if (!folderExistedPreTest) {

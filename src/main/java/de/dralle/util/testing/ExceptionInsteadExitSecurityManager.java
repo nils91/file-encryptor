@@ -9,7 +9,7 @@ import java.security.Permission;
  * @author Nils Dralle
  *
  */
-public class ExcpetionInsteadExitSecurityManager extends SecurityManager {
+public class ExceptionInsteadExitSecurityManager extends SecurityManager {
 
 	@Override
 	public void checkPermission(Permission perm) {// allow anything
