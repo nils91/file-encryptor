@@ -98,6 +98,7 @@ public class FileEncryptorCLIApp {
 			inputFile = getInputFileFromCLIArguments(cmd);
 		} else {
 			stdout.println("No input file specified");
+			System.exit(1);
 		}
 		if (cmd.hasOption("o")) {
 			outputFile = getOutputFilePathFromCLIArguments(cmd);
@@ -341,6 +342,7 @@ public class FileEncryptorCLIApp {
 			inputFile=getInputFileFromCLIArguments(cmd);
 		} else {
 			stdout.println("No input file specified");
+			System.exit(1);
 		}
 		if (cmd.hasOption("o")) {
 			outputFile = getOutputFilePathFromCLIArguments(cmd);
