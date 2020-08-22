@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +28,8 @@ class FileEncryptorCLIAppTest {
 	private static Path tmpFile = null;
 	
 	private static boolean folderExistedPreTest;
-
+	private static boolean fileExistedPreTest;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -39,7 +41,11 @@ class FileEncryptorCLIAppTest {
 			tmpFolder=Files.createDirectory(tmpFolder);
 		}
 		if(Files.exists(tmpFolder)) {
-			
+			tmpFile=Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
+			fileExistedPreTest = Files.exists(tmpFile);
+			if(!fileExistedPreTest) {
+				tmpFile=Files.createFile(tmpFile);
+			}
 		}else {
 			throw new Exception("Folder not created");
 		}
@@ -50,6 +56,9 @@ class FileEncryptorCLIAppTest {
 	 */
 	@AfterEach
 	void tearDown() throws Exception {
+		if(tmpFile!=null&&!fileExistedPreTest) {
+			Files.delete(tmpFile);
+		}
 		if(tmpFolder!=null&&!folderExistedPreTest) { //clean up folder
 			Files.delete(tmpFolder);
 		}
