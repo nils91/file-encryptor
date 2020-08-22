@@ -180,4 +180,24 @@ class FileEncryptorCLIAppTest {
 		String[] folderContentsAfter = tmpFolderFileInstance.list();
 		assertArrayEquals(folderContentsBefore, folderContentsAfter);
 	}
+	@Test
+	void testNoInputFileEncryptionNoAction() {
+		String[] params=new String[] {"-e"};
+		File tmpFolderFileInstance = new File(tmpFolder.toUri());
+		String[] folderContentsBefore = tmpFolderFileInstance.list();
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		feApp.run(params);
+		String[] folderContentsAfter = tmpFolderFileInstance.list();
+		assertArrayEquals(folderContentsBefore, folderContentsAfter);
+	}
+	@Test
+	void testNoInputFileDecryptionNoAction() {
+		String[] params=new String[] {"-d"};
+		File tmpFolderFileInstance = new File(tmpFolder.toUri());
+		String[] folderContentsBefore = tmpFolderFileInstance.list();
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		feApp.run(params);
+		String[] folderContentsAfter = tmpFolderFileInstance.list();
+		assertArrayEquals(folderContentsBefore, folderContentsAfter);
+	}
 }
