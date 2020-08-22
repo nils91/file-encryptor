@@ -271,6 +271,9 @@ public class FileEncryptorCLIApp {
 	 * @return
 	 */
 	private File generateOutputFileNameFromInputFile(File inputFile,String fileExt) {
+		if(inputFile==null) {
+			return null;
+		}
 		String outputFilePath;
 		File outputFile;
 		outputFilePath = inputFile.getAbsolutePath() + fileExt;
