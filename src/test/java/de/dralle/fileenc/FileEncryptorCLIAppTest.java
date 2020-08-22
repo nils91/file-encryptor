@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.dralle.util.testing.ExceptionInsteadExitSecurityManager;
+import de.dralle.util.testing.ExitException;
 
 /**
  * @author Nils Dralle
@@ -57,7 +58,7 @@ class FileEncryptorCLIAppTest {
 			fileExistedPreTest = Files.exists(tmpFile);
 			if (!fileExistedPreTest) {
 				tmpFile = Files.createFile(tmpFile);
-				if(Files.exists(tmpFile)) {
+				if (Files.exists(tmpFile)) {
 					FileOutputStream tmpFileOut = new FileOutputStream(new File(tmpFile.toUri()));
 					BufferedOutputStream tmpFileBOut = new BufferedOutputStream(tmpFileOut);
 					byte[] fileContents = new byte[128];
@@ -65,7 +66,7 @@ class FileEncryptorCLIAppTest {
 					rnd.nextBytes(fileContents);
 					tmpFileBOut.write(fileContents);
 					tmpFileBOut.close();
-				}else {
+				} else {
 					throw new Exception("File not created");
 				}
 			}
@@ -152,55 +153,75 @@ class FileEncryptorCLIAppTest {
 		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
 		assertTrue(Files.exists(tmp));
 	}
-	
+
 	@Test
 	void testTemporaryTestFileSize() {
 		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
-		File f=new File(tmp.toUri());
-		assertTrue(f.length()>0);
+		File f = new File(tmp.toUri());
+		assertTrue(f.length() > 0);
 	}
+
 	@Test
 	void testTemporaryTestFileNotFolder() {
 		Path tmp = Paths.get(TEMPORARY_FOLDER_NAME, TEMPORARY_FILE_NAME);
 		assertTrue(Files.exists(tmp));
 		assertFalse(Files.isDirectory(tmp));
 	}
-	
+
 	@Test
 	void testNoParamNoActionNull() {
 		File tmpFolderFileInstance = new File(tmpFolder.toUri());
 		String[] folderContentsBefore = tmpFolderFileInstance.list();
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
-		feApp.run(null);
+		try {
+			feApp.run(null);
+		} catch (ExitException e) {
+			assertTrue(e.getStatus() > 0);
+		}
 		String[] folderContentsAfter = tmpFolderFileInstance.list();
 		assertArrayEquals(folderContentsBefore, folderContentsAfter);
 	}
+
 	@Test
 	void testNoParamNoAction() {
 		File tmpFolderFileInstance = new File(tmpFolder.toUri());
 		String[] folderContentsBefore = tmpFolderFileInstance.list();
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
-		feApp.run(new String[0]);
+		try {
+			feApp.run(new String[0]);
+		} catch (ExitException e) {
+			assertTrue(e.getStatus() > 0);
+		}
 		String[] folderContentsAfter = tmpFolderFileInstance.list();
 		assertArrayEquals(folderContentsBefore, folderContentsAfter);
 	}
+
 	@Test
 	void testNoInputFileEncryptionNoAction() {
-		String[] params=new String[] {"-e"};
+		String[] params = new String[] { "-e" };
 		File tmpFolderFileInstance = new File(tmpFolder.toUri());
 		String[] folderContentsBefore = tmpFolderFileInstance.list();
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
-		feApp.run(params);
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			assertTrue(e.getStatus() > 0);
+		}
 		String[] folderContentsAfter = tmpFolderFileInstance.list();
 		assertArrayEquals(folderContentsBefore, folderContentsAfter);
 	}
+
 	@Test
 	void testNoInputFileDecryptionNoAction() {
-		String[] params=new String[] {"-d"};
+		String[] params = new String[] { "-d" };
 		File tmpFolderFileInstance = new File(tmpFolder.toUri());
 		String[] folderContentsBefore = tmpFolderFileInstance.list();
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
-		feApp.run(params);
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			assertTrue(e.getStatus() > 0);
+		}
 		String[] folderContentsAfter = tmpFolderFileInstance.list();
 		assertArrayEquals(folderContentsBefore, folderContentsAfter);
 	}
