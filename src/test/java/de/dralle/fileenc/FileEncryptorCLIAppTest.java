@@ -164,6 +164,20 @@ class FileEncryptorCLIAppTest {
 	
 	@Test
 	void testNoParamNoActionNull() {
-		
+		File tmpFolderFileInstance = new File(tmpFolder.toUri());
+		String[] folderContentsBefore = tmpFolderFileInstance.list();
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		feApp.run(null);
+		String[] folderContentsAfter = tmpFolderFileInstance.list();
+		assertArrayEquals(folderContentsBefore, folderContentsAfter);
+	}
+	@Test
+	void testNoParamNoAction() {
+		File tmpFolderFileInstance = new File(tmpFolder.toUri());
+		String[] folderContentsBefore = tmpFolderFileInstance.list();
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		feApp.run(new String[0]);
+		String[] folderContentsAfter = tmpFolderFileInstance.list();
+		assertArrayEquals(folderContentsBefore, folderContentsAfter);
 	}
 }
