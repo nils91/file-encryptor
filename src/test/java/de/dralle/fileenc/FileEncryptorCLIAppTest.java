@@ -22,7 +22,10 @@ import org.junit.jupiter.api.Test;
 class FileEncryptorCLIAppTest {
 
 	private static final String TEMPORARY_FOLDER_NAME = "tmp";
-	private static Path TEMPORARY_FOLDER = null;
+	private static Path tmpFolder = null;
+	private static final String TEMPORARY_FILE_NAME = "file";
+	private static Path tmpFile = null;
+	
 	private static boolean folderExistedPreTest;
 
 	/**
@@ -30,10 +33,15 @@ class FileEncryptorCLIAppTest {
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
-		TEMPORARY_FOLDER=Paths.get(TEMPORARY_FOLDER_NAME);
-		folderExistedPreTest = Files.exists(TEMPORARY_FOLDER);
+		tmpFolder=Paths.get(TEMPORARY_FOLDER_NAME);
+		folderExistedPreTest = Files.exists(tmpFolder);
 		if(!folderExistedPreTest) {
-			TEMPORARY_FOLDER=Files.createDirectory(TEMPORARY_FOLDER);
+			tmpFolder=Files.createDirectory(tmpFolder);
+		}
+		if(Files.exists(tmpFolder)) {
+			
+		}else {
+			throw new Exception("Folder not created");
 		}
 	}
 
@@ -42,8 +50,8 @@ class FileEncryptorCLIAppTest {
 	 */
 	@AfterEach
 	void tearDown() throws Exception {
-		if(TEMPORARY_FOLDER!=null&&!folderExistedPreTest) { //clean up folder
-			Files.delete(TEMPORARY_FOLDER);
+		if(tmpFolder!=null&&!folderExistedPreTest) { //clean up folder
+			Files.delete(tmpFolder);
 		}
 	}
 
