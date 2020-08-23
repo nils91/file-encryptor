@@ -243,10 +243,11 @@ class FileEncryptorCLIAppTest {
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
 		assertTrue(Files.exists(encFile));
 	}
-	
+
 	@Test
 	void testEncryptionEncryptedFileExistsOutputPathSpecified() throws IOException {
-		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString(),"-o",tmpFile.toAbsolutePath().toString()+".encrypted"};
+		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString(), "-o",
+				tmpFile.toAbsolutePath().toString() + ".encrypted" };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
@@ -256,6 +257,60 @@ class FileEncryptorCLIAppTest {
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
 		assertTrue(Files.exists(encFile));
 		Files.deleteIfExists(encFile);
-			
+
+	}
+
+	@Test
+	void testDecryptionDecryptedFileExists() {
+		// Encrypt
+		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString() };
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			//assertEquals(0, e.getStatus());
+		}
+		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
+		//assertTrue(Files.exists(encFile));
+		// Decrypt
+		params = new String[] { "-d", "-i", encFile.toAbsolutePath().toString() };
+		feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			assertEquals(0, e.getStatus());
+		}
+		decFile = Paths.get(encFile.toAbsolutePath() + ".dec");
+		assertTrue(Files.exists(decFile));
+	}
+
+	@Test
+	void testDecryptionDecryptedFileExistsOutputPathSpecified() throws IOException {
+		//Encrypt
+		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString(), "-o",
+				tmpFile.toAbsolutePath().toString() + ".encrypted" };
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			//assertEquals(0, e.getStatus());
+		}
+		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
+		//assertTrue(Files.exists(encFile));
+		
+		//Decrypt
+		params = new String[] { "-d", "-i", encFile.toAbsolutePath().toString(), "-o",
+				encFile.toAbsolutePath().toString() + ".decrypted" };
+		feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			assertEquals(0, e.getStatus(),"Terminated unexpectedly");
+		}
+		decFile = Paths.get(encFile.toAbsolutePath() + ".decrypted");
+		assertTrue(Files.exists(decFile));
+		Files.deleteIfExists(encFile);
+		Files.deleteIfExists(decFile);
+		
 	}
 }
