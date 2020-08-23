@@ -80,8 +80,8 @@ class FileEncryptorCLIAppTest {
 	 */
 	@AfterEach
 	void tearDown() throws Exception {
-		cleanupTmpFolderFile();
 		cleanupOtherExpectedFiles();
+		cleanupTmpFolderFile();
 		checkIfAllFilesDeletedForCleanup();
 		System.setSecurityManager(null);
 	}
@@ -225,17 +225,17 @@ class FileEncryptorCLIAppTest {
 		String[] folderContentsAfter = tmpFolderFileInstance.list();
 		assertArrayEquals(folderContentsBefore, folderContentsAfter);
 	}
-	
+
 	@Test
 	void testEncryptionEncryptedFileExists() {
-		String[] params = new String[] { "-e","-i",tmpFile.toAbsolutePath().toString() };
+		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString() };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
 			fail();
 		}
-		encFile=Paths.get(tmpFile.toAbsolutePath()+".enc");
+		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
 		assertTrue(Files.exists(encFile));
 	}
 }
