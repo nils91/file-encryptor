@@ -104,6 +104,11 @@ class FileEncryptorCLIAppTest {
 			Files.delete(tmpFile);
 		}
 		if (tmpFolder != null && !folderExistedPreTest) { // clean up folder
+			File tmpFolderFileInstance = tmpFolder.toFile();
+			File[] folderContents = tmpFolderFileInstance.listFiles();
+			for (int i = 0; i < folderContents.length; i++) {
+				folderContents[i].delete();
+			}
 			Files.delete(tmpFolder);
 		}
 	}
@@ -237,5 +242,20 @@ class FileEncryptorCLIAppTest {
 		}
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
 		assertTrue(Files.exists(encFile));
+	}
+	
+	@Test
+	void testEncryptionEncryptedFileExistsOutputPathSpecified() throws IOException {
+		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString(),"-o",tmpFile.toAbsolutePath().toString()+".encrypted"};
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			assertEquals(0, e.getStatus());
+		}
+		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
+		assertTrue(Files.exists(encFile));
+		Files.deleteIfExists(encFile);
+			
 	}
 }
