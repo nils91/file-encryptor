@@ -1,5 +1,16 @@
 # File Encryptor
-Encrypt/decrypt files with AES.
+file-encyptor is a small standalone tool that lets you encrypt/decrypt files using AES-256. The tool is used on the command line. An installed JRE/JDK is required.
+
+To build from source:\
+`mvn clean install`\
+The executable jar is called `file-encryptor-[VERSION]-shaded.jar`.\
+To run the tests:\
+`mvn clean test`\
+
+Minimal encryption example:\
+`java -jar file-encryptor.jar -e -i path/to/input.file -w`\
+Minimal decryption example:\
+`java -jar file-encryptor.jar -d -i path/to/input.file.enc -k <key>`\
 
 ```
 Usage: file-encryptor
