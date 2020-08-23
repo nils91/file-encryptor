@@ -5,12 +5,12 @@ To build from source:\
 `mvn clean install`\
 The executable jar is called `file-encryptor-[VERSION]-shaded.jar`.\
 To run the tests:\
-`mvn clean test`\
+`mvn clean test`
 
 Minimal encryption example:\
 `java -jar file-encryptor.jar -e -i path/to/input.file -w`\
 Minimal decryption example:\
-`java -jar file-encryptor.jar -d -i path/to/input.file.enc -k <key>`\
+`java -jar file-encryptor.jar -d -i path/to/input.file.enc -k <key>`
 
 ```
 Usage: file-encryptor
