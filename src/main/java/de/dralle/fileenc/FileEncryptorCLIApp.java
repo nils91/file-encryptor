@@ -120,6 +120,10 @@ public class FileEncryptorCLIApp {
 		byte[] completeFile = readAllBytesFromInputFile(inputFile);
 		// Decrypt
 		byte[] completeFileDecrypted = AESUtil.decryptAssumingOnlyIVPrefix(completeFile, key);
+		if(completeFileDecrypted==null) {
+			System.out.println("Decryption failed");
+			System.exit(1);
+		}
 		// Write
 		writeOutputFile(outputFile, completeFileDecrypted);
 		if (verbose) {
