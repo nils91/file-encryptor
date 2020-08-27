@@ -118,7 +118,7 @@ class FileEncryptorCLIAppTest {
 	 */
 	private void cleanupTmpFolderFile() throws IOException {
 		if (tmpFile != null && !fileExistedPreTest) { // clean up file
-			Files.delete(tmpFile);
+			Files.deleteIfExists(tmpFile);
 		}
 		if (tmpFolder != null && !folderExistedPreTest) { // clean up folder
 			File tmpFolderFileInstance = tmpFolder.toFile();
@@ -126,7 +126,7 @@ class FileEncryptorCLIAppTest {
 			for (int i = 0; i < folderContents.length; i++) {
 				folderContents[i].delete();
 			}
-			Files.delete(tmpFolder);
+			Files.deleteIfExists(tmpFolder);
 		}
 	}
 
