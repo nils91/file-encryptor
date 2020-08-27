@@ -3,7 +3,7 @@ file-encyptor is a small standalone tool that lets you encrypt/decrypt files usi
 
 To build from source:\
 `mvn clean install`\
-The executable jar is called `file-encryptor-[VERSION]-shaded.jar`.\
+The executable jar is called `file-encryptor-[VERSION]-shaded.jar` inside the `target`-folder.\
 To run the tests:\
 `mvn clean test`
 
