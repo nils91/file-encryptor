@@ -37,7 +37,7 @@ import de.dralle.util.Base64Util;
  *
  */
 public class FileEncryptorCLIApp {
-	public final static String VERSION = "0.0.2";
+	public final static String VERSION = "0.0.3";
 	private boolean verbose;
 	private PrintStream stdout;
 
