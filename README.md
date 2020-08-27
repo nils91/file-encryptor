@@ -24,6 +24,8 @@ Usage: file-encryptor
                        the output filename in encryption mode is just the
                        input filename + '.enc' or '.dec' in decryption
                        mode.
+ -r,--remove           Remove the input file after the operation is
+                       complete
  -t,--verbose          Switch on verbode mode
  -v,--version          Show version information
  -w,--writekey <arg>   Write the key to the console (or a file) once
