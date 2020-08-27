@@ -73,8 +73,7 @@ public class FileEncryptorCLIApp {
 	 */
 	private void printFullCommandString(String[] args) {
 		try {
-			stdout.print(
-					FileEncryptorCLIApp.class.getProtectionDomain().getCodeSource().getLocation().getFile() + " ");
+			stdout.print(FileEncryptorCLIApp.class.getProtectionDomain().getCodeSource().getLocation().getFile() + " ");
 		} catch (Exception e) {
 		}
 		for (int i = 0; i < args.length; i++) {
@@ -106,7 +105,7 @@ public class FileEncryptorCLIApp {
 			if (verbose) {
 				stdout.println("No output file specified");
 			}
-			outputFile = generateOutputFileNameFromInputFile(inputFile,".dec");
+			outputFile = generateOutputFileNameFromInputFile(inputFile, ".dec");
 		}
 		// Read key
 		SecretKey key = null;
@@ -120,7 +119,7 @@ public class FileEncryptorCLIApp {
 		byte[] completeFile = readAllBytesFromInputFile(inputFile);
 		// Decrypt
 		byte[] completeFileDecrypted = AESUtil.decryptAssumingOnlyIVPrefix(completeFile, key);
-		if(completeFileDecrypted==null) {
+		if (completeFileDecrypted == null) {
 			System.out.println("Decryption failed");
 			System.exit(1);
 		}
@@ -132,6 +131,16 @@ public class FileEncryptorCLIApp {
 		if (cmd.hasOption("w")) {
 			this.stdout.println(Base64Util.encodeBytes2Str(key.getEncoded()));
 		}
+		if (cmd.hasOption("r")) {
+			boolean deleted = inputFile.delete();
+			if (verbose) {
+				if (deleted) {
+					this.stdout.println("Input file deletion successfull");
+				} else {
+					this.stdout.println("Input file deletion not successfull");
+				}
+			}
+		}
 	}
 
 	/**
@@ -139,7 +148,7 @@ public class FileEncryptorCLIApp {
 	 * @param content
 	 */
 	private void writeOutputFile(File outputFile, byte[] content) {
-		if(outputFile==null) {
+		if (outputFile == null) {
 			throw new NullPointerException();
 		}
 		OutputStream out = null;
@@ -171,12 +180,13 @@ public class FileEncryptorCLIApp {
 			}
 		}
 	}
+
 	/**
 	 * @param file
 	 * @return
 	 */
 	private byte[] readAllBytesFromFile(File file) {
-		if(file==null) {
+		if (file == null) {
 			return null;
 		}
 		InputStream in = null;
@@ -204,8 +214,10 @@ public class FileEncryptorCLIApp {
 		}
 		return completeFile;
 	}
+
 	/**
 	 * Deprecated. Use readAllBytesFromFile instead.
+	 * 
 	 * @param inputFile
 	 * @return
 	 */
@@ -213,9 +225,10 @@ public class FileEncryptorCLIApp {
 	private byte[] readAllBytesFromInputFile(File inputFile) {
 		return readAllBytesFromFile(inputFile);
 	}
-	
+
 	/**
 	 * Deprecated. Use readAllBytesFromFile instead.
+	 * 
 	 * @param file
 	 * @return
 	 */
@@ -275,14 +288,12 @@ public class FileEncryptorCLIApp {
 		return key;
 	}
 
-	
-
 	/**
 	 * @param inputFile
 	 * @return
 	 */
-	private File generateOutputFileNameFromInputFile(File inputFile,String fileExt) {
-		if(inputFile==null) {
+	private File generateOutputFileNameFromInputFile(File inputFile, String fileExt) {
+		if (inputFile == null) {
 			return null;
 		}
 		String outputFilePath;
@@ -343,7 +354,7 @@ public class FileEncryptorCLIApp {
 		File inputFile = null;
 		File outputFile = null;
 		if (cmd.hasOption("i")) {
-			inputFile=getInputFileFromCLIArguments(cmd);
+			inputFile = getInputFileFromCLIArguments(cmd);
 		} else {
 			stdout.println("No input file specified");
 			System.exit(1);
@@ -351,7 +362,7 @@ public class FileEncryptorCLIApp {
 		if (cmd.hasOption("o")) {
 			outputFile = getOutputFilePathFromCLIArguments(cmd);
 		} else {
-			outputFile=generateOutputFileNameFromInputFile(inputFile, ".enc");
+			outputFile = generateOutputFileNameFromInputFile(inputFile, ".enc");
 		}
 		byte[] completeFile = readAllBytesFromInputFile(inputFile);
 		// Encrypt
@@ -427,8 +438,20 @@ public class FileEncryptorCLIApp {
 						e.printStackTrace();
 					}
 				}
+
 				if (verbose) {
 					this.stdout.println("Key written to " + tgtKeyFile.getAbsolutePath());
+				}
+			}
+
+		}
+		if (cmd.hasOption("r")) {
+			boolean deleted = inputFile.delete();
+			if (verbose) {
+				if (deleted) {
+					this.stdout.println("Input file deletion successfull");
+				} else {
+					this.stdout.println("Input file deletion not successfull");
 				}
 			}
 		}
@@ -465,8 +488,7 @@ public class FileEncryptorCLIApp {
 		options.addOption("i", "in", true, "Input file");
 		options.addOption("o", "out", true,
 				"Output file name. If this parameter is not given, the output filename in encryption mode is just the input filename + '.enc' or '.dec' in decryption mode.");
-		// options.addOption("r", "remove", false, "Remove the input file after the
-		// operation is complete");
+		options.addOption("r", "remove", false, "Remove the input file after the operation is complete");
 		options.addOption("t", "verbose", false, "Switch on verbode mode");
 		// options.addOption("c", "verify", false, "Verify the operation");
 		// options.addOption("p", "password", true, "Encrypt/Decrypt using a password");
