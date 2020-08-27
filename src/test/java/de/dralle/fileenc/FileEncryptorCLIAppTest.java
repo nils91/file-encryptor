@@ -508,5 +508,67 @@ class FileEncryptorCLIAppTest {
 		Files.deleteIfExists(encFile);
 		Files.deleteIfExists(keyFile);
 
+	}	@Test
+	void testEncryptionInputFileNotDeleted() {
+		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString() };
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			//fail();
+		}
+		assertTrue(Files.exists(tmpFile));
+	}	@Test
+	void testEncryptionInputFileDeleted() {
+		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString() ,"-r"};
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			//fail();
+		}
+		assertFalse(Files.exists(tmpFile));
+	}@Test
+	void testDecryptionInputFileDeleted() {
+		// Encrypt
+		String[] params = new String[] { "-e", "-k",sampleAesKey, "-i", tmpFile.toAbsolutePath().toString() };
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			// assertEquals(0, e.getStatus());
+		}
+		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
+		// assertTrue(Files.exists(encFile));
+		// Decrypt
+		params = new String[] { "-d", "-k",sampleAesKey, "-i", encFile.toAbsolutePath().toString() ,"-r"};
+		feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			//assertEquals(0, e.getStatus());
+		}
+		assertFalse(Files.exists(encFile));
+	}@Test
+	void testDecryptionInputFileNotDeleted() {
+		// Encrypt
+		String[] params = new String[] { "-e", "-k",sampleAesKey, "-i", tmpFile.toAbsolutePath().toString() };
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			// assertEquals(0, e.getStatus());
+		}
+		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
+		// assertTrue(Files.exists(encFile));
+		// Decrypt
+		params = new String[] { "-d", "-k",sampleAesKey, "-i", encFile.toAbsolutePath().toString() };
+		feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			//assertEquals(0, e.getStatus());
+		}
+		assertTrue(Files.exists(encFile));
 	}
 }
