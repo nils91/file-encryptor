@@ -7,3 +7,5 @@
 
 ## 0.0.3
 - `Option '-r': Remove input file after encryption/decryption`
+
+## 0.0.4
