@@ -246,8 +246,8 @@ public class FileEncryptorCLIApp {
 		if(m.matches()) {
 			fileContentsString=fileContentsString.replace("\r", "");
 			fileContentsString=fileContentsString.replace("\n", "");
-			fileContentsString=fileContentsString.replace("------BEGIN AES KEY-----", "");
-			fileContentsString=fileContentsString.replace("------END AES KEY-----", "");
+			fileContentsString=fileContentsString.replace("-----BEGIN AES KEY-----", "");
+			fileContentsString=fileContentsString.replace("-----END AES KEY-----", "");
 			return Base64Util.decodeString(fileContentsString);
 		}else {
 			return null;
