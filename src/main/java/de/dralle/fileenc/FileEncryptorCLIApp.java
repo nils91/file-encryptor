@@ -20,6 +20,8 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.SecretKey;
 
@@ -238,7 +240,10 @@ public class FileEncryptorCLIApp {
 	public byte[] readKeyFile(File file) {		
 		byte[] fileContentsBytes = readAllBytesFromFile(file);
 		String fileContentsString = StringUtil.byteArrToStr(fileContentsBytes);
-		if(fileContentsString.matches("------BEGIN AES KEY-----.*-----END AES KEY-----\r?\n?")) {
+		String regexString = "------BEGIN AES KEY-----.*-----END AES KEY-----\r?\n?";
+		Pattern pe=Pattern.compile(regexString, Pattern.MULTILINE);
+		Matcher m=pe.matcher(regexString);
+		if(m.matches()) {
 			fileContentsString=fileContentsString.replace("\r", "");
 			fileContentsString=fileContentsString.replace("\n", "");
 			fileContentsString=fileContentsString.replace("------BEGIN AES KEY-----", "");
