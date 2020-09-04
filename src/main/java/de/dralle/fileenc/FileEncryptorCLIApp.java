@@ -6,11 +6,13 @@ package de.dralle.fileenc;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -426,35 +428,7 @@ public class FileEncryptorCLIApp {
 				if (verbose) {
 					this.stdout.println(String.format("Writing key to %s.", tgtKeyFile.getAbsolutePath()));
 				}
-				// Write key
-				OutputStream keyout = null;
-				try {
-					keyout = new FileOutputStream(tgtKeyFile);
-				} catch (FileNotFoundException e) {
-					this.stdout.println("Error while opening key file");
-					if (verbose) {
-						e.printStackTrace();
-					}
-					System.exit(1);
-				}
-				BufferedOutputStream keybout = new BufferedOutputStream(keyout);
-				try {
-					keybout.write(key.getEncoded());
-				} catch (IOException e) {
-					this.stdout.println("Error while writing key file");
-					if (verbose) {
-						e.printStackTrace();
-					}
-					System.exit(1);
-				}
-				try {
-					keybout.close();
-				} catch (IOException e) {
-					this.stdout.println("Error while closing key file");
-					if (verbose) {
-						e.printStackTrace();
-					}
-				}
+				writeKeyToFile(tgtKeyFile, key);
 
 				if (verbose) {
 					this.stdout.println("Key written to " + tgtKeyFile.getAbsolutePath());
@@ -473,6 +447,24 @@ public class FileEncryptorCLIApp {
 			}
 		}
 
+	}
+
+	/**
+	 * @param keyFile
+	 * @param key
+	 */
+	private boolean writeKeyToFile(File keyFile, SecretKey key) {
+		if(key==null||keyFile==null) {
+			return false;
+		}
+		String keyfileContents="-----BEGIN AES KEY-----\n"+Base64Util.encodeBytes2Str(key.getEncoded())+"\n-----END AES KEY-----";
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(keyFile, StandardCharsets.UTF_8));writer.write(keyfileContents);writer.close();
+		} catch (IOException e) {
+			return false;
+		}
+		return true;
 	}
 
 	private CommandLine parseCLI(String[] args, Options options) {
