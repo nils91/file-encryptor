@@ -10,12 +10,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,7 @@ import org.apache.commons.cli.ParseException;
 
 import de.dralle.util.AESUtil;
 import de.dralle.util.Base64Util;
+import de.dralle.util.StringUtil;
 
 /**
  * @author Nils Dralle
@@ -227,14 +230,23 @@ public class FileEncryptorCLIApp {
 	}
 
 	/**
-	 * Deprecated. Use readAllBytesFromFile instead.
+	 * Reads the key from a file. File format is a text file with the key Base64 encoded between a header and footer line. May return null in case of a problem.
 	 * 
 	 * @param file
 	 * @return
 	 */
-	@Deprecated
-	private byte[] readKeyFile(File file) {
-		return readAllBytesFromFile(file);
+	public byte[] readKeyFile(File file) {		
+		byte[] fileContentsBytes = readAllBytesFromFile(file);
+		String fileContentsString = StringUtil.byteArrToStr(fileContentsBytes);
+		if(fileContentsString.matches("------BEGIN AES KEY-----.*-----END AES KEY-----\r?\n?")) {
+			fileContentsString=fileContentsString.replace("\r", "");
+			fileContentsString=fileContentsString.replace("\n", "");
+			fileContentsString=fileContentsString.replace("------BEGIN AES KEY-----", "");
+			fileContentsString=fileContentsString.replace("------END AES KEY-----", "");
+			return Base64Util.decodeString(fileContentsString);
+		}else {
+			return null;
+		}
 	}
 
 	/**
@@ -279,7 +291,7 @@ public class FileEncryptorCLIApp {
 			if (verbose) {
 				stdout.println("Provided key is a file");
 			}
-			// Read file bytes
+			// Read keyfile
 			keyBytes = readKeyFile(keyFileTrial);
 		} else {
 			keyBytes = Base64Util.decodeString(keyValue);

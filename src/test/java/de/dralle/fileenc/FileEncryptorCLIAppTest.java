@@ -12,8 +12,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -570,5 +572,22 @@ class FileEncryptorCLIAppTest {
 			//assertEquals(0, e.getStatus());
 		}
 		assertTrue(Files.exists(encFile));
+	}
+	@Test
+	void testReadKeyFile() {
+		byte[] keyBytes = new byte[32];
+		new Random().nextBytes(keyBytes);
+		keyFile=Paths.get(tmpFolder.toString(), "key");
+		String keyfileContents="-----BEGIN AES KEY------\n"+Base64Util.encodeBytes2Str(keyBytes)+"\n-----END AES KEY-----";
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(keyFile.toFile(), StandardCharsets.UTF_8));writer.write(keyfileContents);writer.close();
+		} catch (IOException e) {
+			
+		}
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		byte[] keyBytesRead = feApp.readKeyFile(keyFile.toFile());
+		assertArrayEquals(keyBytes, keyBytesRead);
+		assertTrue(keyFile.toFile().delete());
 	}
 }
