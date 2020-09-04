@@ -1,10 +1,8 @@
 package de.dralle.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-
-import de.dralle.util.StringUtil;
 
 class StringUtilTest {
 

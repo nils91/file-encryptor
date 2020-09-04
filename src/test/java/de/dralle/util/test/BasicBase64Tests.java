@@ -3,7 +3,8 @@
  */
 package de.dralle.util.test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.charset.Charset;
 import java.util.Base64;
@@ -11,8 +12,6 @@ import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;
 
 import org.junit.jupiter.api.Test;
-
-import de.dralle.util.Base64Util;
 
 /**
  * @author Nils Dralle
@@ -29,70 +28,76 @@ class BasicBase64Tests {
 		byte[] decodedBytes = decoder.decode(encodedBytes);
 		assertArrayEquals(inputBytes, decodedBytes);
 	}
+
 	@Test
 	void testSimpleStringEncodingDecoding() {
-		String input="Hello World!";
+		String input = "Hello World!";
 		Encoder encoder = Base64.getEncoder();
 		Decoder decoder = Base64.getDecoder();
 		byte[] inputBytes = input.getBytes();
 		byte[] encodedBytes = encoder.encode(inputBytes);
 		byte[] decodedBytes = decoder.decode(encodedBytes);
-		String decoded=new String(decodedBytes);
+		String decoded = new String(decodedBytes);
 		assertEquals(input, decoded);
 	}
+
 	@Test
 	void testSimpleStringEncodingDecodingExplicitEncoding() {
-		String input="Hello World!";
+		String input = "Hello World!";
 		Encoder encoder = Base64.getEncoder();
 		Decoder decoder = Base64.getDecoder();
 		byte[] inputBytes = input.getBytes(Charset.forName("UTF-8"));
 		byte[] encodedBytes = encoder.encode(inputBytes);
 		byte[] decodedBytes = decoder.decode(encodedBytes);
-		String decoded=new String(decodedBytes,Charset.forName("UTF-8"));
+		String decoded = new String(decodedBytes, Charset.forName("UTF-8"));
 		assertEquals(input, decoded);
 	}
+
 	@Test
 	void testSimpleStringEncodingDecodingNumeric() {
-		String input="1234567890";
+		String input = "1234567890";
 		Encoder encoder = Base64.getEncoder();
 		Decoder decoder = Base64.getDecoder();
 		byte[] inputBytes = input.getBytes(Charset.forName("UTF-8"));
 		byte[] encodedBytes = encoder.encode(inputBytes);
 		byte[] decodedBytes = decoder.decode(encodedBytes);
-		String decoded=new String(decodedBytes,Charset.forName("UTF-8"));
+		String decoded = new String(decodedBytes, Charset.forName("UTF-8"));
 		assertEquals(input, decoded);
 	}
+
 	@Test
 	void testSimpleStringEncodingDecodingLowercaseChars() {
-		String input="abcdefghijklmnopqrstuvwxyz";
+		String input = "abcdefghijklmnopqrstuvwxyz";
 		Encoder encoder = Base64.getEncoder();
 		Decoder decoder = Base64.getDecoder();
 		byte[] inputBytes = input.getBytes(Charset.forName("UTF-8"));
 		byte[] encodedBytes = encoder.encode(inputBytes);
 		byte[] decodedBytes = decoder.decode(encodedBytes);
-		String decoded=new String(decodedBytes,Charset.forName("UTF-8"));
+		String decoded = new String(decodedBytes, Charset.forName("UTF-8"));
 		assertEquals(input, decoded);
 	}
+
 	@Test
 	void testSimpleStringEncodingDecodingUppercaseChars() {
-		String input="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String input = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		Encoder encoder = Base64.getEncoder();
 		Decoder decoder = Base64.getDecoder();
 		byte[] inputBytes = input.getBytes(Charset.forName("UTF-8"));
 		byte[] encodedBytes = encoder.encode(inputBytes);
 		byte[] decodedBytes = decoder.decode(encodedBytes);
-		String decoded=new String(decodedBytes,Charset.forName("UTF-8"));
+		String decoded = new String(decodedBytes, Charset.forName("UTF-8"));
 		assertEquals(input, decoded);
 	}
+
 	@Test
 	void testSimpleStringEncodingDecodingSpecialChars() {
-		String input="!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
+		String input = "!\"§$%&/()=?{[]}\\´`@+*~#'-_<>|,.";
 		Encoder encoder = Base64.getEncoder();
 		Decoder decoder = Base64.getDecoder();
 		byte[] inputBytes = input.getBytes(Charset.forName("UTF-8"));
 		byte[] encodedBytes = encoder.encode(inputBytes);
 		byte[] decodedBytes = decoder.decode(encodedBytes);
-		String decoded=new String(decodedBytes,Charset.forName("UTF-8"));
+		String decoded = new String(decodedBytes, Charset.forName("UTF-8"));
 		assertEquals(input, decoded);
 	}
 }

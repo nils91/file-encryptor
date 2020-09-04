@@ -5,20 +5,16 @@ package de.dralle.fileenc;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -234,24 +230,26 @@ public class FileEncryptorCLIApp {
 	}
 
 	/**
-	 * Reads the key from a file. File format is a text file with the key Base64 encoded between a header and footer line. May return null in case of a problem.
+	 * Reads the key from a file. File format is a text file with the key Base64
+	 * encoded between a header and footer line. May return null in case of a
+	 * problem.
 	 * 
 	 * @param file
 	 * @return
 	 */
-	public byte[] readKeyFile(File file) {		
+	public byte[] readKeyFile(File file) {
 		byte[] fileContentsBytes = readAllBytesFromFile(file);
 		String fileContentsString = StringUtil.byteArrToStr(fileContentsBytes);
 		String regexString = "-----BEGIN AES KEY-----.*-----END AES KEY-----";
-		Pattern pe=Pattern.compile(regexString, Pattern.MULTILINE);
-		Matcher m=pe.matcher(regexString);
-		if(m.matches()) {
-			fileContentsString=fileContentsString.replace("\r", "");
-			fileContentsString=fileContentsString.replace("\n", "");
-			fileContentsString=fileContentsString.replace("-----BEGIN AES KEY-----", "");
-			fileContentsString=fileContentsString.replace("-----END AES KEY-----", "");
+		Pattern pe = Pattern.compile(regexString, Pattern.MULTILINE);
+		Matcher m = pe.matcher(regexString);
+		if (m.matches()) {
+			fileContentsString = fileContentsString.replace("\r", "");
+			fileContentsString = fileContentsString.replace("\n", "");
+			fileContentsString = fileContentsString.replace("-----BEGIN AES KEY-----", "");
+			fileContentsString = fileContentsString.replace("-----END AES KEY-----", "");
 			return Base64Util.decodeString(fileContentsString);
-		}else {
+		} else {
 			return null;
 		}
 	}
@@ -454,13 +452,16 @@ public class FileEncryptorCLIApp {
 	 * @param key
 	 */
 	private boolean writeKeyToFile(File keyFile, SecretKey key) {
-		if(key==null||keyFile==null) {
+		if (key == null || keyFile == null) {
 			return false;
 		}
-		String keyfileContents="-----BEGIN AES KEY-----\n"+Base64Util.encodeBytes2Str(key.getEncoded())+"\n-----END AES KEY-----";
+		String keyfileContents = "-----BEGIN AES KEY-----\n" + Base64Util.encodeBytes2Str(key.getEncoded())
+				+ "\n-----END AES KEY-----";
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(keyFile, StandardCharsets.UTF_8));writer.write(keyfileContents);writer.close();
+			writer = new BufferedWriter(new FileWriter(keyFile, StandardCharsets.UTF_8));
+			writer.write(keyfileContents);
+			writer.close();
 		} catch (IOException e) {
 			return false;
 		}

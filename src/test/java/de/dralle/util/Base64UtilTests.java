@@ -3,16 +3,10 @@
  */
 package de.dralle.util;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-
-import de.dralle.util.Base64Util;
 
 /**
  * @author Nils Dralle
@@ -20,7 +14,6 @@ import de.dralle.util.Base64Util;
  */
 class Base64UtilTests {
 
-	
 	@Test
 	void testByteEncodingDecoding() {
 		byte[] inputBytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };

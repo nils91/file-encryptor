@@ -24,42 +24,42 @@ public class HashingUtil {
 
 	}
 
-	public  static byte[] getHash(byte[] input, String algorithm) throws NoSuchAlgorithmException {
+	public static byte[] getHash(byte[] input, String algorithm) throws NoSuchAlgorithmException {
 		MessageDigest sha = MessageDigest.getInstance(algorithm);
 		return sha.digest(input);
 	}
 
-	public static  boolean checkHash(byte[] input, byte[] hash, String algorithm) throws NoSuchAlgorithmException {
+	public static boolean checkHash(byte[] input, byte[] hash, String algorithm) throws NoSuchAlgorithmException {
 		byte[] inHash = getHash(input, algorithm);
 		return Arrays.equals(hash, inHash);
 	}
 
-	public static  boolean checkHashSHA256(byte[] input, byte[] hash) {
+	public static boolean checkHashSHA256(byte[] input, byte[] hash) {
 		byte[] inHash = getHashSHA256(input);
 		return Arrays.equals(hash, inHash);
 	}
 
-	public static  boolean checkHashSHA512(byte[] input, byte[] hash) {
+	public static boolean checkHashSHA512(byte[] input, byte[] hash) {
 		byte[] inHash = getHashSHA512(input);
 		return Arrays.equals(hash, inHash);
 	}
 
-	public static  boolean checkHash(String input, byte[] hash, String algorithm) throws NoSuchAlgorithmException {
+	public static boolean checkHash(String input, byte[] hash, String algorithm) throws NoSuchAlgorithmException {
 		byte[] inHash = getHash(input, algorithm);
 		return Arrays.equals(hash, inHash);
 	}
 
-	public  static boolean checkHashSHA256(String input, byte[] hash) {
+	public static boolean checkHashSHA256(String input, byte[] hash) {
 		byte[] inHash = getHashSHA256(input);
 		return Arrays.equals(hash, inHash);
 	}
 
-	public  static boolean checkHashSHA512(String input, byte[] hash) {
+	public static boolean checkHashSHA512(String input, byte[] hash) {
 		byte[] inHash = getHashSHA512(input);
 		return Arrays.equals(hash, inHash);
 	}
 
-	public  static byte[] getHashSHA256(byte[] input) {
+	public static byte[] getHashSHA256(byte[] input) {
 		try {
 			return getHash(input, ALGO_SHA_256);
 		} catch (NoSuchAlgorithmException e) {
@@ -68,7 +68,7 @@ public class HashingUtil {
 		return null;
 	}
 
-	public  static byte[] getHashSHA512(byte[] input) {
+	public static byte[] getHashSHA512(byte[] input) {
 		try {
 			return getHash(input, ALGO_SHA_512);
 		} catch (NoSuchAlgorithmException e) {
@@ -77,7 +77,7 @@ public class HashingUtil {
 		return null;
 	}
 
-	public static  byte[] getHashSHA256(String input) {
+	public static byte[] getHashSHA256(String input) {
 		try {
 			return getHash(input, ALGO_SHA_256);
 		} catch (NoSuchAlgorithmException e) {
@@ -86,7 +86,7 @@ public class HashingUtil {
 		return null;
 	}
 
-	public  static byte[] getHashSHA512(String input) {
+	public static byte[] getHashSHA512(String input) {
 		try {
 			return getHash(input, ALGO_SHA_512);
 		} catch (NoSuchAlgorithmException e) {
@@ -107,7 +107,7 @@ public class HashingUtil {
 	 * @return Salted hash. The salt will be added in front of the hash.
 	 * @throws NoSuchAlgorithmException
 	 */
-	public  static byte[] getSaltedHash(byte[] input, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
+	public static byte[] getSaltedHash(byte[] input, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
 		if (salt == null) {
 			return getHash(input, algorithm);
 		}
@@ -131,7 +131,7 @@ public class HashingUtil {
 	 * @return Salted hash. The salt will be added in front of the hash.
 	 * @throws NoSuchAlgorithmException
 	 */
-	public  static byte[] getSaltedHashIncludingSaltLen(byte[] input, byte[] salt, String algorithm)
+	public static byte[] getSaltedHashIncludingSaltLen(byte[] input, byte[] salt, String algorithm)
 			throws NoSuchAlgorithmException {
 		if (salt == null) {
 			return getHash(input, algorithm);
@@ -143,10 +143,10 @@ public class HashingUtil {
 	}
 
 	public static byte[] concatenateArrays(byte[] arr1, byte[] arr2) {
-		if(arr1==null) {
+		if (arr1 == null) {
 			return arr2;
 		}
-		if(arr2==null) {
+		if (arr2 == null) {
 			return arr1;
 		}
 		byte[] newArr = new byte[arr1.length + arr2.length];
@@ -170,7 +170,7 @@ public class HashingUtil {
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 */
-	public  static boolean checkSaltedHash(byte[] input, byte[] salt, byte[] hash, String algorithm)
+	public static boolean checkSaltedHash(byte[] input, byte[] salt, byte[] hash, String algorithm)
 			throws NoSuchAlgorithmException {
 		if (salt == null) {
 			return checkHash(input, hash, algorithm);
@@ -180,7 +180,7 @@ public class HashingUtil {
 		return Arrays.equals(hash, inHash);
 	}
 
-	public static  boolean checkSaltedHash(byte[] input, int saltLen, byte[] saltedHash, String algorithm)
+	public static boolean checkSaltedHash(byte[] input, int saltLen, byte[] saltedHash, String algorithm)
 			throws NoSuchAlgorithmException {
 		byte[] salt = new byte[saltLen];
 		for (int i = 0; i < salt.length; i++) {
@@ -203,7 +203,8 @@ public class HashingUtil {
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static  boolean checkSaltedHash(byte[] input, byte[] saltedHash, String algorithm) throws NoSuchAlgorithmException {
+	public static boolean checkSaltedHash(byte[] input, byte[] saltedHash, String algorithm)
+			throws NoSuchAlgorithmException {
 		int saltLen = saltedHash[0];
 		byte[] saltedHashWOSaltLen = new byte[saltedHash.length - 1];
 		for (int i = 0; i < saltedHashWOSaltLen.length; i++) {
@@ -224,7 +225,7 @@ public class HashingUtil {
 	 * @return Salted hash. The salt will be added in front of the hash.
 	 * @throws NoSuchAlgorithmException
 	 */
-	public  static byte[] getSaltedHash(String input, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
+	public static byte[] getSaltedHash(String input, byte[] salt, String algorithm) throws NoSuchAlgorithmException {
 		byte[] inputArr = StringUtil.strToByteArr(input);
 		return getSaltedHash(inputArr, salt, algorithm);
 	}
@@ -242,7 +243,7 @@ public class HashingUtil {
 	 * @return Salted hash. The salt will be added in front of the hash.
 	 * @throws NoSuchAlgorithmException
 	 */
-	public  static byte[] getSaltedHashIncludingSaltLen(String input, byte[] salt, String algorithm)
+	public static byte[] getSaltedHashIncludingSaltLen(String input, byte[] salt, String algorithm)
 			throws NoSuchAlgorithmException {
 		byte[] inputArr = StringUtil.strToByteArr(input);
 		return getSaltedHashIncludingSaltLen(inputArr, salt, algorithm);
@@ -258,7 +259,7 @@ public class HashingUtil {
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 */
-	public  static boolean checkSaltedHash(String input, byte[] salt, byte[] hash, String algorithm)
+	public static boolean checkSaltedHash(String input, byte[] salt, byte[] hash, String algorithm)
 			throws NoSuchAlgorithmException {
 		byte[] inputArr = StringUtil.strToByteArr(input);
 		return checkSaltedHash(inputArr, salt, hash, algorithm);
@@ -280,7 +281,8 @@ public class HashingUtil {
 	 * @return
 	 * @throws NoSuchAlgorithmException
 	 */
-	public  static boolean checkSaltedHash(String input, byte[] saltedHash, String algorithm) throws NoSuchAlgorithmException {
+	public static boolean checkSaltedHash(String input, byte[] saltedHash, String algorithm)
+			throws NoSuchAlgorithmException {
 		byte[] inputArr = StringUtil.strToByteArr(input);
 		return checkSaltedHash(inputArr, saltedHash, algorithm);
 	}
@@ -294,7 +296,7 @@ public class HashingUtil {
 	 *              null, just the hash of input will be returned.
 	 * @return Salted hash. The salt will be added in front of the hash.
 	 */
-	public  static byte[] getSaltedHashSHA256(String input, byte[] salt) {
+	public static byte[] getSaltedHashSHA256(String input, byte[] salt) {
 		try {
 			return getSaltedHash(input, salt, ALGO_SHA_256);
 		} catch (NoSuchAlgorithmException e) {
@@ -314,7 +316,7 @@ public class HashingUtil {
 	 *              null, just the hash of input will be returned.
 	 * @return Salted hash. The salt will be added in front of the hash.
 	 */
-	public  static byte[] getSaltedHashIncludingSaltLenSHA256(String input, byte[] salt) {
+	public static byte[] getSaltedHashIncludingSaltLenSHA256(String input, byte[] salt) {
 		try {
 			return getSaltedHashIncludingSaltLen(input, salt, ALGO_SHA_256);
 		} catch (NoSuchAlgorithmException e) {
@@ -331,7 +333,7 @@ public class HashingUtil {
 	 * @param hash  Not salted hash.
 	 * @return
 	 */
-	public  static boolean checkSaltedHashSHA256(String input, byte[] salt, byte[] hash) {
+	public static boolean checkSaltedHashSHA256(String input, byte[] salt, byte[] hash) {
 		try {
 			return checkSaltedHash(input, salt, hash, ALGO_SHA_256);
 		} catch (NoSuchAlgorithmException e) {
@@ -341,7 +343,7 @@ public class HashingUtil {
 		return false;
 	}
 
-	public  static boolean checkSaltedHashSHA256(String input, int saltLen, byte[] saltedHash) {
+	public static boolean checkSaltedHashSHA256(String input, int saltLen, byte[] saltedHash) {
 		try {
 			return checkSaltedHash(input, saltLen, saltedHash, ALGO_SHA_256);
 		} catch (NoSuchAlgorithmException e) {
@@ -359,7 +361,7 @@ public class HashingUtil {
 	 * @param saltedHash
 	 * @return
 	 */
-	public  static boolean checkSaltedHashSHA256(String input, byte[] saltedHash) {
+	public static boolean checkSaltedHashSHA256(String input, byte[] saltedHash) {
 		try {
 			return checkSaltedHash(input, saltedHash, ALGO_SHA_256);
 		} catch (NoSuchAlgorithmException e) {
@@ -378,7 +380,7 @@ public class HashingUtil {
 	 *              null, just the hash of input will be returned.
 	 * @return Salted hash. The salt will be added in front of the hash.
 	 */
-	public  static byte[] getSaltedHashSHA512(String input, byte[] salt) {
+	public static byte[] getSaltedHashSHA512(String input, byte[] salt) {
 		try {
 			return getSaltedHash(input, salt, ALGO_SHA_512);
 		} catch (NoSuchAlgorithmException e) {
@@ -398,7 +400,7 @@ public class HashingUtil {
 	 *              null, just the hash of input will be returned.
 	 * @return Salted hash. The salt will be added in front of the hash.
 	 */
-	public  static byte[] getSaltedHashIncludingSaltLenSHA512(String input, byte[] salt) {
+	public static byte[] getSaltedHashIncludingSaltLenSHA512(String input, byte[] salt) {
 		try {
 			return getSaltedHashIncludingSaltLen(input, salt, ALGO_SHA_512);
 		} catch (NoSuchAlgorithmException e) {
@@ -415,7 +417,7 @@ public class HashingUtil {
 	 * @param hash  Not salted hash.
 	 * @return
 	 */
-	public static  boolean checkSaltedHashSHA512(String input, byte[] salt, byte[] hash) {
+	public static boolean checkSaltedHashSHA512(String input, byte[] salt, byte[] hash) {
 		try {
 			return checkSaltedHash(input, salt, hash, ALGO_SHA_512);
 		} catch (NoSuchAlgorithmException e) {
@@ -425,7 +427,7 @@ public class HashingUtil {
 		return false;
 	}
 
-	public static  boolean checkSaltedHashSHA512(String input, int saltLen, byte[] saltedHash) {
+	public static boolean checkSaltedHashSHA512(String input, int saltLen, byte[] saltedHash) {
 		try {
 			return checkSaltedHash(input, saltLen, saltedHash, ALGO_SHA_512);
 		} catch (NoSuchAlgorithmException e) {
@@ -443,7 +445,7 @@ public class HashingUtil {
 	 * @param saltedHash
 	 * @return
 	 */
-	public static  boolean checkSaltedHashSHA512(String input, byte[] saltedHash) {
+	public static boolean checkSaltedHashSHA512(String input, byte[] saltedHash) {
 		try {
 			return checkSaltedHash(input, saltedHash, ALGO_SHA_512);
 		} catch (NoSuchAlgorithmException e) {

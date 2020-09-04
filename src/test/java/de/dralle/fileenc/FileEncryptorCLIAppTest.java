@@ -3,14 +3,17 @@
  */
 package de.dralle.fileenc;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,12 +22,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -282,7 +283,7 @@ class FileEncryptorCLIAppTest {
 	@Test
 	void testDecryptionDecryptedFileExists() {
 		// Encrypt
-		String[] params = new String[] { "-e", "-k",sampleAesKey, "-i", tmpFile.toAbsolutePath().toString() };
+		String[] params = new String[] { "-e", "-k", sampleAesKey, "-i", tmpFile.toAbsolutePath().toString() };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
@@ -292,7 +293,7 @@ class FileEncryptorCLIAppTest {
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
 		// assertTrue(Files.exists(encFile));
 		// Decrypt
-		params = new String[] { "-d", "-k",sampleAesKey, "-i", encFile.toAbsolutePath().toString() };
+		params = new String[] { "-d", "-k", sampleAesKey, "-i", encFile.toAbsolutePath().toString() };
 		feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
@@ -306,7 +307,7 @@ class FileEncryptorCLIAppTest {
 	@Test
 	void testDecryptionDecryptedFileExistsOutputPathSpecified() throws IOException {
 		// Encrypt
-		String[] params = new String[] { "-e", "-k",sampleAesKey, "-i", tmpFile.toAbsolutePath().toString(), "-o",
+		String[] params = new String[] { "-e", "-k", sampleAesKey, "-i", tmpFile.toAbsolutePath().toString(), "-o",
 				tmpFile.toAbsolutePath().toString() + ".encrypted" };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
@@ -318,7 +319,7 @@ class FileEncryptorCLIAppTest {
 		// assertTrue(Files.exists(encFile));
 
 		// Decrypt
-		params = new String[] { "-d", "-k",sampleAesKey, "-i", encFile.toAbsolutePath().toString(), "-o",
+		params = new String[] { "-d", "-k", sampleAesKey, "-i", encFile.toAbsolutePath().toString(), "-o",
 				encFile.toAbsolutePath().toString() + ".decrypted" };
 		feApp = new FileEncryptorCLIApp();
 		try {
@@ -331,46 +332,50 @@ class FileEncryptorCLIAppTest {
 		Files.deleteIfExists(encFile);
 		Files.deleteIfExists(decFile);
 
-	}/**
+	}
+
+	/**
 	 * @param bin
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private byte[] readAllBytes(BufferedInputStream bin) throws IOException {
 		List<Byte> allBytes = new ArrayList<Byte>();
 		byte[] completeFile = null;
-			while (bin.available() > 0) {
-				int nextByte = bin.read();
-				allBytes.add(Byte.valueOf((byte) nextByte));
-			}
-	
+		while (bin.available() > 0) {
+			int nextByte = bin.read();
+			allBytes.add(Byte.valueOf((byte) nextByte));
+		}
+
 		completeFile = new byte[allBytes.size()];
 		for (int i = 0; i < completeFile.length; i++) {
 			completeFile[i] = allBytes.get(i);
 		}
 		return completeFile;
 	}
+
 	/**
 	 * @param file
 	 * @return
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private byte[] readAllBytesFromFile(File file) throws IOException {
-		if(file==null) {
+		if (file == null) {
 			return null;
 		}
 		InputStream in = null;
-			in = new FileInputStream(file);
+		in = new FileInputStream(file);
 		BufferedInputStream bin = new BufferedInputStream(in);
 		byte[] completeFile = readAllBytes(bin);
-			bin.close();
-		
+		bin.close();
+
 		return completeFile;
 	}
+
 	@Test
 	void testDecryptionDecryptedFileMatchesInputFileKeyFromeConsole() throws IOException {
 		// Encrypt
-		String[] params = new String[] { "-e", "-k",sampleAesKey, "-i", tmpFile.toAbsolutePath().toString(), "-o",
+		String[] params = new String[] { "-e", "-k", sampleAesKey, "-i", tmpFile.toAbsolutePath().toString(), "-o",
 				tmpFile.toAbsolutePath().toString() + ".encrypted" };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
@@ -382,27 +387,28 @@ class FileEncryptorCLIAppTest {
 		// assertTrue(Files.exists(encFile));
 
 		// Decrypt
-		params = new String[] { "-d", "-k",sampleAesKey, "-i", encFile.toAbsolutePath().toString(), "-o",
+		params = new String[] { "-d", "-k", sampleAesKey, "-i", encFile.toAbsolutePath().toString(), "-o",
 				encFile.toAbsolutePath().toString() + ".decrypted" };
 		feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
-			//assertEquals(0, e.getStatus(), "Terminated unexpectedly");
+			// assertEquals(0, e.getStatus(), "Terminated unexpectedly");
 		}
 		decFile = Paths.get(encFile.toAbsolutePath() + ".decrypted");
-		//assertTrue(Files.exists(decFile));
-		byte[] decryptedFileContents=readAllBytesFromFile(decFile.toFile());
+		// assertTrue(Files.exists(decFile));
+		byte[] decryptedFileContents = readAllBytesFromFile(decFile.toFile());
 		assertArrayEquals(fileContents, decryptedFileContents);
-		
+
 		Files.deleteIfExists(encFile);
 		Files.deleteIfExists(decFile);
 
 	}
+
 	@Test
 	void testDecryptionDecryptedFileMatchesInputFileKeyFromFileDefaultFilename() throws IOException {
 		// Encrypt
-		String[] params = new String[] { "-e", "-w","yes", "-i", tmpFile.toAbsolutePath().toString(), "-o",
+		String[] params = new String[] { "-e", "-w", "yes", "-i", tmpFile.toAbsolutePath().toString(), "-o",
 				tmpFile.toAbsolutePath().toString() + ".encrypted" };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
@@ -410,68 +416,72 @@ class FileEncryptorCLIAppTest {
 		} catch (ExitException e) {
 			// assertEquals(0, e.getStatus());
 		}
-		
+
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
-		keyFile=Paths.get(encFile.toAbsolutePath() + ".key");
+		keyFile = Paths.get(encFile.toAbsolutePath() + ".key");
 		// assertTrue(Files.exists(encFile));
 
 		// Decrypt
-		params = new String[] { "-d", "-k",keyFile.toAbsolutePath().toString(), "-i", encFile.toAbsolutePath().toString(), "-o",
-				encFile.toAbsolutePath().toString() + ".decrypted" };
+		params = new String[] { "-d", "-k", keyFile.toAbsolutePath().toString(), "-i",
+				encFile.toAbsolutePath().toString(), "-o", encFile.toAbsolutePath().toString() + ".decrypted" };
 		feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
-			//assertEquals(0, e.getStatus(), "Terminated unexpectedly");
+			// assertEquals(0, e.getStatus(), "Terminated unexpectedly");
 		}
 		decFile = Paths.get(encFile.toAbsolutePath() + ".decrypted");
-		//assertTrue(Files.exists(decFile));
-		byte[] decryptedFileContents=readAllBytesFromFile(decFile.toFile());
+		// assertTrue(Files.exists(decFile));
+		byte[] decryptedFileContents = readAllBytesFromFile(decFile.toFile());
 		assertArrayEquals(fileContents, decryptedFileContents);
-		
+
 		Files.deleteIfExists(encFile);
 		Files.deleteIfExists(decFile);
 		Files.deleteIfExists(keyFile);
 
-	}@Test
+	}
+
+	@Test
 	void testDecryptionDecryptedFileMatchesInputFileKeyFromFileCustomFilename() throws IOException {
 		// Encrypt
-		keyFile=Paths.get(tmpFile.toAbsolutePath() + ".keyfile");
-		String[] params = new String[] { "-e", "-w",keyFile.toAbsolutePath().toString(), "-i", tmpFile.toAbsolutePath().toString(), "-o",
-				tmpFile.toAbsolutePath().toString() + ".encrypted" };
+		keyFile = Paths.get(tmpFile.toAbsolutePath() + ".keyfile");
+		String[] params = new String[] { "-e", "-w", keyFile.toAbsolutePath().toString(), "-i",
+				tmpFile.toAbsolutePath().toString(), "-o", tmpFile.toAbsolutePath().toString() + ".encrypted" };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
 			// assertEquals(0, e.getStatus());
 		}
-		
+
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
-		
+
 		// assertTrue(Files.exists(encFile));
 
 		// Decrypt
-		params = new String[] { "-d", "-k",keyFile.toAbsolutePath().toString(), "-i", encFile.toAbsolutePath().toString(), "-o",
-				encFile.toAbsolutePath().toString() + ".decrypted" };
+		params = new String[] { "-d", "-k", keyFile.toAbsolutePath().toString(), "-i",
+				encFile.toAbsolutePath().toString(), "-o", encFile.toAbsolutePath().toString() + ".decrypted" };
 		feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
-			//assertEquals(0, e.getStatus(), "Terminated unexpectedly");
+			// assertEquals(0, e.getStatus(), "Terminated unexpectedly");
 		}
 		decFile = Paths.get(encFile.toAbsolutePath() + ".decrypted");
-		//assertTrue(Files.exists(decFile));
-		byte[] decryptedFileContents=readAllBytesFromFile(decFile.toFile());
+		// assertTrue(Files.exists(decFile));
+		byte[] decryptedFileContents = readAllBytesFromFile(decFile.toFile());
 		assertArrayEquals(fileContents, decryptedFileContents);
-		
+
 		Files.deleteIfExists(encFile);
 		Files.deleteIfExists(decFile);
 		Files.deleteIfExists(keyFile);
 
-	}@Test
+	}
+
+	@Test
 	void testKeyfileWrittenDefaultFilename() throws IOException {
 		// Encrypt
-		String[] params = new String[] { "-e", "-w","yes", "-i", tmpFile.toAbsolutePath().toString(), "-o",
+		String[] params = new String[] { "-e", "-w", "yes", "-i", tmpFile.toAbsolutePath().toString(), "-o",
 				tmpFile.toAbsolutePath().toString() + ".encrypted" };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
@@ -479,61 +489,66 @@ class FileEncryptorCLIAppTest {
 		} catch (ExitException e) {
 			// assertEquals(0, e.getStatus());
 		}
-		
+
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
-		keyFile=Paths.get(encFile.toAbsolutePath() + ".key");
+		keyFile = Paths.get(encFile.toAbsolutePath() + ".key");
 		assertTrue(Files.exists(keyFile));
 
-	
-		
 		Files.deleteIfExists(encFile);
 		Files.deleteIfExists(keyFile);
 
-	}@Test
+	}
+
+	@Test
 	void testKeyfileWrittenCustomFilename() throws IOException {
 		// Encrypt
-		keyFile=Paths.get(tmpFile.toAbsolutePath() + ".keyfile");
-		String[] params = new String[] { "-e", "-w",keyFile.toAbsolutePath().toString(), "-i", tmpFile.toAbsolutePath().toString(), "-o",
-				tmpFile.toAbsolutePath().toString() + ".encrypted" };
+		keyFile = Paths.get(tmpFile.toAbsolutePath() + ".keyfile");
+		String[] params = new String[] { "-e", "-w", keyFile.toAbsolutePath().toString(), "-i",
+				tmpFile.toAbsolutePath().toString(), "-o", tmpFile.toAbsolutePath().toString() + ".encrypted" };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
 			// assertEquals(0, e.getStatus());
 		}
-		
-		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
-		
-		 assertTrue(Files.exists(keyFile));
 
-		
+		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
+
+		assertTrue(Files.exists(keyFile));
+
 		Files.deleteIfExists(encFile);
 		Files.deleteIfExists(keyFile);
 
-	}	@Test
+	}
+
+	@Test
 	void testEncryptionInputFileNotDeleted() {
 		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString() };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
-			//fail();
+			// fail();
 		}
 		assertTrue(Files.exists(tmpFile));
-	}	@Test
+	}
+
+	@Test
 	void testEncryptionInputFileDeleted() {
-		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString() ,"-r"};
+		String[] params = new String[] { "-e", "-i", tmpFile.toAbsolutePath().toString(), "-r" };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
-			//fail();
+			// fail();
 		}
 		assertFalse(Files.exists(tmpFile));
-	}@Test
+	}
+
+	@Test
 	void testDecryptionInputFileDeleted() {
 		// Encrypt
-		String[] params = new String[] { "-e", "-k",sampleAesKey, "-i", tmpFile.toAbsolutePath().toString() };
+		String[] params = new String[] { "-e", "-k", sampleAesKey, "-i", tmpFile.toAbsolutePath().toString() };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
@@ -543,18 +558,20 @@ class FileEncryptorCLIAppTest {
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
 		// assertTrue(Files.exists(encFile));
 		// Decrypt
-		params = new String[] { "-d", "-k",sampleAesKey, "-i", encFile.toAbsolutePath().toString() ,"-r"};
+		params = new String[] { "-d", "-k", sampleAesKey, "-i", encFile.toAbsolutePath().toString(), "-r" };
 		feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
-			//assertEquals(0, e.getStatus());
+			// assertEquals(0, e.getStatus());
 		}
 		assertFalse(Files.exists(encFile));
-	}@Test
+	}
+
+	@Test
 	void testDecryptionInputFileNotDeleted() {
 		// Encrypt
-		String[] params = new String[] { "-e", "-k",sampleAesKey, "-i", tmpFile.toAbsolutePath().toString() };
+		String[] params = new String[] { "-e", "-k", sampleAesKey, "-i", tmpFile.toAbsolutePath().toString() };
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
@@ -564,26 +581,30 @@ class FileEncryptorCLIAppTest {
 		encFile = Paths.get(tmpFile.toAbsolutePath() + ".enc");
 		// assertTrue(Files.exists(encFile));
 		// Decrypt
-		params = new String[] { "-d", "-k",sampleAesKey, "-i", encFile.toAbsolutePath().toString() };
+		params = new String[] { "-d", "-k", sampleAesKey, "-i", encFile.toAbsolutePath().toString() };
 		feApp = new FileEncryptorCLIApp();
 		try {
 			feApp.run(params);
 		} catch (ExitException e) {
-			//assertEquals(0, e.getStatus());
+			// assertEquals(0, e.getStatus());
 		}
 		assertTrue(Files.exists(encFile));
 	}
+
 	@Test
 	void testReadKeyFile() {
 		byte[] keyBytes = new byte[32];
 		new Random().nextBytes(keyBytes);
-		keyFile=Paths.get(tmpFolder.toString(), "key");
-		String keyfileContents="-----BEGIN AES KEY-----\n"+Base64Util.encodeBytes2Str(keyBytes)+"\n-----END AES KEY-----";
+		keyFile = Paths.get(tmpFolder.toString(), "key");
+		String keyfileContents = "-----BEGIN AES KEY-----\n" + Base64Util.encodeBytes2Str(keyBytes)
+				+ "\n-----END AES KEY-----";
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(keyFile.toFile(), StandardCharsets.UTF_8));writer.write(keyfileContents);writer.close();
+			writer = new BufferedWriter(new FileWriter(keyFile.toFile(), StandardCharsets.UTF_8));
+			writer.write(keyfileContents);
+			writer.close();
 		} catch (IOException e) {
-			
+
 		}
 		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
 		byte[] keyBytesRead = feApp.readKeyFile(keyFile.toFile());

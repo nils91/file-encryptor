@@ -3,7 +3,6 @@
  */
 package de.dralle.util;
 
-import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.Base64.Encoder;

@@ -3,7 +3,10 @@
  */
 package de.dralle.util.test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -25,8 +28,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import de.dralle.util.Base64Util;
 
 /**
  * @author Nils Dralle
@@ -88,7 +89,7 @@ class BasicSymmetricEncryptionTests {
 	@Test
 	void testAESKeyGenerationFromPW() {
 		String pw = "Passwort123";
-		byte[] salt = new byte[] { 0,0,0,0 };
+		byte[] salt = new byte[] { 0, 0, 0, 0 };
 		SecretKeyFactory factory = null;
 		try {
 			factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");

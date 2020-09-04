@@ -3,16 +3,15 @@
  */
 package de.dralle.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import de.dralle.util.Base64Util;
-import de.dralle.util.HashingUtil;
 
 /**
  * @author Nils Dralle
