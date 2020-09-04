@@ -240,7 +240,7 @@ public class FileEncryptorCLIApp {
 	public byte[] readKeyFile(File file) {		
 		byte[] fileContentsBytes = readAllBytesFromFile(file);
 		String fileContentsString = StringUtil.byteArrToStr(fileContentsBytes);
-		String regexString = "------BEGIN AES KEY-----.*-----END AES KEY-----\r?\n?";
+		String regexString = "-----BEGIN AES KEY-----.*-----END AES KEY-----";
 		Pattern pe=Pattern.compile(regexString, Pattern.MULTILINE);
 		Matcher m=pe.matcher(regexString);
 		if(m.matches()) {

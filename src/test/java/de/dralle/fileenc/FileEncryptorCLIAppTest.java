@@ -578,7 +578,7 @@ class FileEncryptorCLIAppTest {
 		byte[] keyBytes = new byte[32];
 		new Random().nextBytes(keyBytes);
 		keyFile=Paths.get(tmpFolder.toString(), "key");
-		String keyfileContents="-----BEGIN AES KEY------\n"+Base64Util.encodeBytes2Str(keyBytes)+"\n-----END AES KEY-----";
+		String keyfileContents="-----BEGIN AES KEY-----\n"+Base64Util.encodeBytes2Str(keyBytes)+"\n-----END AES KEY-----";
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(keyFile.toFile(), StandardCharsets.UTF_8));writer.write(keyfileContents);writer.close();
