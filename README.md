@@ -42,4 +42,5 @@ The file-encryptor uses to different types of files: The AES-Keyfile (see option
 The structure of the files is quite simple. The AES keyfile, which has the ending '.key' by default, is a binary file containing the bytes that make up the key. For AES-256 the key is 32 bytes in size. The keyfile only contains the key and nothing else.
 The encrypted file is also very simple. It too is a binary file and contains the IV (initial vector) and the encrypted file. The first byte is the size of the IV (16, or 0x10 in hex), followed by the IV and then the encrypted file.
 
-### 
+### From 0.0.4
+Starting with 0.0.4 there will be some changes to the file structure. The keyfile will now be a textfile. The file will start with the line ``-----BEGIN AES KEY-----`` and end with the line ``-----END AES KEY-----``. The key itself, still 32 bytes, is encoded using Base64 and in the line between the start and end line.
