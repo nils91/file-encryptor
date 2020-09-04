@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -459,7 +460,7 @@ public class FileEncryptorCLIApp {
 				+ "\n-----END AES KEY-----";
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(keyFile, StandardCharsets.UTF_8));
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(keyFile), StandardCharsets.UTF_8));
 			writer.write(keyfileContents);
 			writer.close();
 		} catch (IOException e) {

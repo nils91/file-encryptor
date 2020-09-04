@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -600,7 +601,8 @@ class FileEncryptorCLIAppTest {
 				+ "\n-----END AES KEY-----";
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(keyFile.toFile(), StandardCharsets.UTF_8));
+			writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream(keyFile.toFile()), StandardCharsets.UTF_8));
 			writer.write(keyfileContents);
 			writer.close();
 		} catch (IOException e) {
