@@ -41,6 +41,8 @@ import de.dralle.util.StringUtil;
  *
  */
 public class FileEncryptorCLIApp {
+	private static final String KEYFILE_FOOTER = "-----END AES KEY-----";
+	public static final String KEYFILE_HEADER = "-----BEGIN AES KEY-----";
 	public final static String VERSION = "0.0.4";
 	private boolean verbose;
 	private PrintStream stdout;
@@ -241,14 +243,14 @@ public class FileEncryptorCLIApp {
 	public byte[] readKeyFile(File file) {
 		byte[] fileContentsBytes = readAllBytesFromFile(file);
 		String fileContentsString = StringUtil.byteArrToStr(fileContentsBytes);
-		String regexString = "-----BEGIN AES KEY-----.*-----END AES KEY-----";
+		String regexString = KEYFILE_HEADER + "\\S+" + KEYFILE_FOOTER;
 		Pattern pe = Pattern.compile(regexString, Pattern.MULTILINE);
 		Matcher m = pe.matcher(regexString);
 		if (m.matches()) {
+			fileContentsString = fileContentsString.replace(KEYFILE_HEADER, "");
+			fileContentsString = fileContentsString.replace(KEYFILE_FOOTER, "");
 			fileContentsString = fileContentsString.replace("\r", "");
 			fileContentsString = fileContentsString.replace("\n", "");
-			fileContentsString = fileContentsString.replace("-----BEGIN AES KEY-----", "");
-			fileContentsString = fileContentsString.replace("-----END AES KEY-----", "");
 			return Base64Util.decodeString(fileContentsString);
 		} else {
 			return null;
@@ -456,8 +458,8 @@ public class FileEncryptorCLIApp {
 		if (key == null || keyFile == null) {
 			return false;
 		}
-		String keyfileContents = "-----BEGIN AES KEY-----\n" + Base64Util.encodeBytes2Str(key.getEncoded())
-				+ "\n-----END AES KEY-----";
+		String keyfileContents = KEYFILE_HEADER + "\n" + Base64Util.encodeBytes2Str(key.getEncoded()) + "\n"
+				+ KEYFILE_FOOTER;
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(keyFile), StandardCharsets.UTF_8));
