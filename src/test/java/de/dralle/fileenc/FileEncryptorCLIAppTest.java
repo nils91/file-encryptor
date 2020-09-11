@@ -26,6 +26,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,6 +36,7 @@ import org.junit.jupiter.api.Test;
 
 import de.dralle.util.AESUtil;
 import de.dralle.util.Base64Util;
+import de.dralle.util.StringUtil;
 import de.dralle.util.testing.ExceptionInsteadExitSecurityManager;
 import de.dralle.util.testing.ExitException;
 
@@ -612,5 +615,31 @@ class FileEncryptorCLIAppTest {
 		byte[] keyBytesRead = feApp.readKeyFile(keyFile.toFile());
 		assertArrayEquals(keyBytes, keyBytesRead);
 		assertTrue(keyFile.toFile().delete());
+	}
+
+	@Test
+	void testKeyfileWrittenDefaultFilenameCorrectFormat() throws IOException {
+		// Encrypt
+		String[] params = new String[] { "-e", "-w", "yes", "-i", tmpFile.toAbsolutePath().toString(), "-o",
+				tmpFile.toAbsolutePath().toString() + ".encrypted" };
+		FileEncryptorCLIApp feApp = new FileEncryptorCLIApp();
+		try {
+			feApp.run(params);
+		} catch (ExitException e) {
+			// assertEquals(0, e.getStatus());
+		}
+
+		encFile = Paths.get(tmpFile.toAbsolutePath() + ".encrypted");
+		keyFile = Paths.get(encFile.toAbsolutePath() + ".key");
+
+		byte[] fileContentsBytes = readAllBytesFromFile(keyFile.toFile());
+		String fileContentsString = StringUtil.byteArrToStr(fileContentsBytes);
+		String regexString = "-+BEGIN AES KEY-+\n" + "\\S+" + "\n-+END AES KEY-+";
+		Pattern pe = Pattern.compile(regexString, Pattern.MULTILINE);
+		Matcher m = pe.matcher(fileContentsString);
+		assertTrue(m.matches());
+		Files.deleteIfExists(encFile);
+		Files.deleteIfExists(keyFile);
+
 	}
 }
