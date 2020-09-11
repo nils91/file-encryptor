@@ -243,9 +243,9 @@ public class FileEncryptorCLIApp {
 	public byte[] readKeyFile(File file) {
 		byte[] fileContentsBytes = readAllBytesFromFile(file);
 		String fileContentsString = StringUtil.byteArrToStr(fileContentsBytes);
-		String regexString = KEYFILE_HEADER + "\\S+" + KEYFILE_FOOTER;
+		String regexString = "-+BEGIN AES KEY-+\n" + "\\S+" + "\n-+END AES KEY-+";
 		Pattern pe = Pattern.compile(regexString, Pattern.MULTILINE);
-		Matcher m = pe.matcher(regexString);
+		Matcher m = pe.matcher(fileContentsString);
 		if (m.matches()) {
 			fileContentsString = fileContentsString.replace(KEYFILE_HEADER, "");
 			fileContentsString = fileContentsString.replace(KEYFILE_FOOTER, "");
