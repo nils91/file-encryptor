@@ -462,8 +462,8 @@ public class FileEncryptorCLIApp {
 		if (key == null || keyFile == null) {
 			return false;
 		}
-		String keyfileContents = KEYFILE_HEADER + "\n" + Base64Util.encodeBytes2Str(key.getEncoded()) + "\n"
-				+ KEYFILE_FOOTER;
+		String keyfileContents = KEYFILE_HEADER_FULL + "\n" + Base64Util.encodeBytes2Str(key.getEncoded()) + "\n"
+				+ KEYFILE_FOOTER_FULL;
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(keyFile), StandardCharsets.UTF_8));
